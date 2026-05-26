@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crossed Classic — Mockup Studio | </title>
+  <!-- Google Fonts (same as index.html) -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Add Swiper core CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <script src="./api-config.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black: #0a0a0a;
+      --off-white: #f0ede6;
+      --gold: #b8952a;
+      --accent: #c8a951;
+      --forest: #1e2e1e;
+      --on-gold: #0a0a0a;
+      --text: var(--off-white);
+      --text-muted: rgba(240, 237, 230, 0.7);
+      --surface: rgba(255, 255, 255, 0.03);
+    }
+
+    html[data-theme="light"] {
+      --black: #fbfaf7;
+      --off-white: #1a1a1a;
+      --gold: #b8952a;
+      --accent: #7a5b12;
+      --on-gold: #0a0a0a;
+      --text: var(--off-white);
+      --text-muted: rgba(26, 26, 26, 0.65);
+      --surface: rgba(0, 0, 0, 0.03);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Cormorant Garamond', serif;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.4rem;
+      border-bottom: 1px solid rgba(180, 149, 42, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.3em;
+      color: var(--accent);
+    }
+
+    .nav-brand img {
+      width: 42px;
+      height: 42px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .btn {
+      min-height: 44px;
+      border: 1px solid var(--gold);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      cursor: pointer;
+      background: transparent;
+      color: var(--accent);
+      padding: 0 1.4rem;
+      border-radius: 12px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--on-gold);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+    }
+
+    
+
+    .statement {
+      padding: 4rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(180, 149, 42, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .statement::before {
+      content: 'CC';
+      position: absolute;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 12vw;
+      color: rgba(180, 149, 42, 0.03);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .statement-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.5em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .statement-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 6vw, 4rem);
+      letter-spacing: 0.04em;
+      margin-bottom: 1rem;
+    }
+
+    .statement-title em {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .statement-quote {
+      font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .signature {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .signature-item {
+      text-align: center;
+    }
+
+    .signature-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .signature-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .section {
+      margin-bottom: 4rem;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.5em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      line-height: 1;
+      letter-spacing: 0.04em;
+      margin-bottom: 2rem;
+    }
+
+    .section-title em {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .product-card {
+      background: var(--surface);
+      border: 1px solid rgba(180, 149, 42, 0.2);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(180, 149, 42, 0.5);
+    }
+
+    .product-card.selected {
+      border-color: var(--gold);
+      box-shadow: 0 0 20px rgba(184, 149, 42, 0.2);
+    }
+
+    .swiper {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1 / 1;
+      background: #111;
+      cursor: grab;
+    }
+    .swiper:active {
+      cursor: grabbing;
+    }
+    .swiper-slide {
+      text-align: center;
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      isolation: isolate;
+    }
+    .carousel-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0;
+      transition: opacity 0.3s ease, filter 0.35s ease;
+      filter: var(--color-filter, none);
+    }
+    .carousel-img.loaded {
+      opacity: 1;
+    }
+
+    /* Color overlay is hidden — color is applied via CSS filters instead */
+    .color-overlay {
+      display: none;
+    }
+    
+    .swiper-pagination {
+      position: absolute;
+      bottom: 12px !important;
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 10;
+    }
+    .swiper-pagination-bullet {
+      width: 6px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 0.7;
+      margin: 0 4px !important;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+    .swiper-pagination-bullet-active {
+      background: var(--gold);
+      width: 18px;
+      border-radius: 3px;
+    }
+
+    .product-info {
+      padding: 1.2rem;
+    }
+    .product-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .product-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.05em;
+      color: var(--off-white);
+      margin-bottom: 0.3rem;
+    }
+    .product-price {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+    
+    .product-colors {
+      margin: 0.8rem 0;
+      padding: 0.5rem 0;
+      border-top: 1px solid rgba(180, 149, 42, 0.15);
+      border-bottom: 1px solid rgba(180, 149, 42, 0.15);
+    }
+    .product-color-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .product-swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .product-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid rgba(180, 149, 42, 0.3);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .product-swatch:hover {
+      transform: scale(1.1);
+    }
+    .product-swatch.active {
+      border-color: var(--gold);
+      box-shadow: 0 0 8px rgba(184, 149, 42, 0.5);
+      transform: scale(1.05);
+    }
+    .selected-color-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.5rem;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin-top: 0.3rem;
+    }
+    
+    .product-sizes {
+      margin: 0.8rem 0;
+      padding: 0.5rem 0;
+      border-top: 1px solid rgba(180, 149, 42, 0.15);
+      border-bottom: 1px solid rgba(180, 149, 42, 0.15);
+    }
+    .product-size-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .product-size-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .size-chip {
+      padding: 0.4rem 0.8rem;
+      border: 1px solid rgba(180, 149, 42, 0.3);
+      border-radius: 20px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: transparent;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .size-chip:hover {
+      border-color: rgba(180, 149, 42, 0.6);
+      color: var(--accent);
+    }
+    .size-chip.active {
+      background: var(--gold);
+      color: var(--on-gold);
+      border-color: var(--gold);
+    }
+    
+    .select-chip {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(180, 149, 42, 0.3);
+      border-radius: 30px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: transparent;
+      color: var(--text-muted);
+      width: 100%;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+    .select-chip.active {
+      background: var(--gold);
+      color: var(--on-gold);
+      border-color: var(--gold);
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 0.8rem 1rem;
+      margin: 1.5rem 0;
+    }
+    .details-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+    }
+    .details-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--off-white);
+    }
+    .total-price {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: var(--accent);
+    }
+    .payment-info {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(180, 149, 42, 0.2);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .payment-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid rgba(180, 149, 42, 0.1);
+    }
+    .payment-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+    }
+    .payment-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .order-reveal {
+      display: none;
+      margin-top: 2rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(180, 149, 42, 0.3);
+      border-radius: 20px;
+      background: rgba(184, 149, 42, 0.05);
+    }
+    .order-reveal.show {
+      display: block;
+    }
+    .reference-number {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.8rem;
+      border-radius: 12px;
+      text-align: center;
+      margin: 1rem 0;
+    }
+    html[data-theme="light"] .reference-number {
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--accent);
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      max-width: 500px;
+      width: 90%;
+      background: var(--black);
+      border: 1px solid rgba(180, 149, 42, 0.3);
+      border-radius: 24px;
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 1.2rem;
+      border-bottom: 1px solid rgba(180, 149, 42, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+    }
+    .modal-close {
+      background: none;
+      border: 1px solid rgba(180, 149, 42, 0.3);
+      color: var(--off-white);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-body {
+      padding: 1.5rem;
+    }
+    .receipt-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text);
+      padding: 1rem;
+      border-radius: 12px;
+    }
+    html[data-theme="light"] .receipt-text {
+      background: rgba(0, 0, 0, 0.04);
+    }
+    .safe-note {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      text-align: center;
+      background: rgba(184, 149, 42, 0.1);
+      border-radius: 20px;
+    }
+    .safe-note.show {
+      display: block;
+    }
+    .safe-note p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .safe-note h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      padding: 3rem 2rem;
+      text-align: center;
+      border-top: 1px solid rgba(180, 149, 42, 0.1);
+      margin-top: 2rem;
+    }
+    .footer-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .footer-info {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.35em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      line-height: 1.8;
+    }
+    @media (max-width: 768px) {
+      nav { padding: 0.8rem 1rem; }
+      .nav-brand { font-size: 0.9rem; letter-spacing: 0.2em; }
+      .nav-brand img { width: 32px; height: 32px; }
+      .btn { padding: 0 1rem; font-size: 0.55rem; min-height: 38px; }
+      .container { padding: 2rem 1rem; }
+      .product-grid { gap: 1.2rem; }
+      .details-grid { grid-template-columns: 1fr; gap: 0.5rem; }
+      .signature { gap: 1rem; }
+    }
+
+    /* ✦ NEW FORM STYLES – fully respects color theme (gold, surface, text) ✦ */
+    .delivery-form {
+      width: 100%;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .field-group label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      transition: color 0.2s ease;
+    }
+    .field-group input,
+    .field-group textarea {
+      background: var(--surface);
+      border: 1px solid rgba(184, 149, 42, 0.25);
+      border-radius: 18px;
+      padding: 0.9rem 1.2rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--text);
+      outline: none;
+      transition: all 0.25s ease;
+      width: 100%;
+      resize: vertical;
+    }
+    .field-group input:focus,
+    .field-group textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(184, 149, 42, 0.25);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .field-group input::placeholder,
+    .field-group textarea::placeholder {
+      color: var(--text-muted);
+      font-weight: 300;
+      font-style: italic;
+      font-size: 0.9rem;
+    }
+    .delivery-hint {
+      margin-top: 0.5rem;
+      padding: 0.9rem 1rem;
+      background: var(--surface);
+      border-left: 3px solid var(--gold);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      backdrop-filter: blur(2px);
+      transition: background 0.2s;
+    }
+    .delivery-hint-icon {
+      font-size: 1.3rem;
+      color: var(--gold);
+    }
+    .delivery-hint:hover {
+      background: rgba(184, 149, 42, 0.08);
+      border-left-color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <img id="brand-logo" alt="Crossed Classic" src="./logo.png" onerror="this.style.display='none'" />
+    <span>Crossed Classic</span>
+  </div>
+  <div class="nav-actions">
+    <a class="btn" href="./tracking.html" id="historyBtn" title="Order history" aria-label="Order history" style="min-height:44px;">🕒</a>
+    <button class="btn" id="themeToggle" type="button" aria-label="Toggle theme" style="min-height:44px;">☀️</button>
+    <button class="btn" id="logoutBtn" style="display: none;">Logout</button>
+    <a href="./index.html" class="btn btn-primary">Back to Shop</a>
+  </div>
+</nav>
+
+<section class="statement">
+  <p class="statement-eyebrow">First Edition</p>
+  <h1 class="statement-title">Crossed Classic <em>— From Africa</em></h1>
+  <p class="statement-quote">"We don't just wear clothes — we wear where we come from. Every stitch, a story."</p>
+  <div class="signature">
+    <div class="signature-item"><div class="signature-label">Signature</div><div class="signature-name">Crossed Classic</div></div>
+    <div class="signature-item"><div class="signature-label">From Africa</div><div class="signature-name">Worldwide</div></div>
+  </div>
+</section>
+
+<div class="container">
+  <section class="section">
+    <p class="section-label">The Collection</p>
+    <h2 class="section-title">Choose <em>your products</em> <span style="font-size: 0.8rem;"></span></h2>
+    <div class="product-grid" id="productGrid"></div>
+  </section>
+
+  <section class="section">
+    <p class="section-label">Summary</p>
+    <h2 class="section-title">Product <em>details</em></h2>
+    <div class="details-grid" id="detailsGrid">
+      <div class="details-label">Selected products</div>
+      <div class="details-value" id="selectedProductsList">—</div>
+      <div class="details-label">Total</div>
+      <div class="details-value total-price" id="totalAmount">₦0</div>
+    </div>
+  </section>
+
+  <section class="section" id="deliverySection">
+    <p class="section-label">Delivery</p>
+    <h2 class="section-title">Delivery <em>details</em></h2>
+    <div class="delivery-card">
+
+      <form class="delivery-form" id="deliveryForm" novalidate>
+        <div class="field-group">
+          <label for="deliveryName">Recipient name</label>
+          <input type="text" id="deliveryName" name="deliveryName" placeholder="Full name" autocomplete="name" />
+        </div>
+        <div class="field-group">
+          <label for="deliveryPhone">Phone</label>
+          <input type="tel" id="deliveryPhone" name="deliveryPhone" placeholder="Phone number" autocomplete="tel" />
+        </div>
+        <div class="field-group">
+          <label for="deliveryAddress">Address</label>
+          <input type="text" id="deliveryAddress" name="deliveryAddress" placeholder="Street, city, country" autocomplete="address-line1" />
+        </div>
+        <div class="field-group">
+          <label for="deliveryNotes">Notes (optional)</label>
+          <textarea id="deliveryNotes" name="deliveryNotes" rows="2" placeholder="E.g. Leave at gate, delivery instructions"></textarea>
+        </div>
+      </form>
+
+      <div class="delivery-hint">
+        <span class="delivery-hint-icon">✦</span>
+        <span>Double-check details for smooth delivery.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <p class="section-label">Payment</p>
+    <h2 class="section-title">Complete <em>your order</em></h2>
+    <div class="payment-info">
+      <div class="payment-row"><span class="payment-label">Account Number</span><span class="payment-value">9126273467</span></div>
+      <div class="payment-row"><span class="payment-label">Bank</span><span class="payment-value">Palmpay Ltd</span></div>
+      <div class="payment-row"><span class="payment-label">Account Name</span><span class="payment-value">Oluwafemi</span></div>
+    </div>
+    <button class="btn btn-primary" id="sentMoneyBtn" style="width: 100%;">I have sent the money</button>
+
+    <div class="order-reveal" id="orderReveal">
+      <div class="reference-label" style="font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em;">Your Reference Number</div>
+      <div class="reference-number" id="referenceNumber">—</div>
+      <div class="details-grid">
+        <div class="details-label">Order items</div>
+        <div class="details-value" id="orderItemsList">—</div>
+        <div class="details-label">Amount paid</div>
+        <div class="details-value" id="orderAmount">—</div>
+        <div class="details-label">Status</div>
+        <div class="details-value" style="color: var(--gold);">Confirmed ✓</div>
+      </div>
+      <button class="btn" id="receiptBtn" style="width: 100%; margin-top: 1rem;">Get Receipt</button>
+    </div>
+
+    <div class="safe-note" id="safeNote">
+      <h3>✓ Your money is safe</h3>
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--text-muted);">
+        Products you bought will be sent to you very soon.<br>
+        Thank you for supporting Crossed Classic — First Edition.<br>
+        <span style="color: var(--accent);">From Africa, with love.</span>
+      </p>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="footer-brand">Crossed Classic</div>
+  <div class="footer-info">Rock CC & Be Lit<br>From Africa · Est. 2023</div>
+</footer>
+
+<div class="modal" id="receiptModal">
+  <div class="modal-content">
+    <div class="modal-header"><span class="modal-title">RECEIPT</span><button class="modal-close" id="closeModalBtn">&times;</button></div>
+    <div class="modal-body"><pre class="receipt-text" id="receiptText"></pre><button class="btn btn-primary" id="screenshotHint" style="width: 100%; margin-top: 1rem; font-size: 0.55rem;">📸 Take Screenshot</button></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+  // Color options ( selector)
+  const colorOptions = [
+    { name: 'Black',  value: '#0a0a0a', code: 'black',  tint: null,        mode: 'neutral' },
+    { name: 'White',  value: '#f7f7f7', code: 'white',  tint: '#e8e0d0',   mode: 'light'   },
+    { name: 'Red',    value: '#ff2a2a', code: 'red',    tint: '#cc1a1a',   mode: 'color'   },
+    { name: 'Forest', value: '#1e2e1e', code: 'forest', tint: '#1e3a1e',   mode: 'color'   },
+    { name: 'Blue',   value: '#1f4fff', code: 'blue',   tint: '#1a3acc',   mode: 'color'   }
+  ];
+
+  const productImageBases = {
+    tshirt:     { front: './assets/tshirt front.png',    back: './assets/tshirt back.png'    },
+    swearshirt: { front: './assets/sweartshirt.png',     back: './assets/sweartshirt.png'   },
+    hoodie:     { front: './assets/hoodie front.png',    back: './assets/hoodie back.png'    }
+  };
+
+  const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+  const products = [
+    { id: 'tshirt', name: 'From Africa Tee', tag: 'T-Shirt', price: 30000, selectedColor: 'Black', selectedColorCode: 'black', selectedColorValue: '#0a0a0a', selectedSize: 'M' },
+    { id: 'swearshirt', name: 'From Africa Sweatshirt', tag: 'Swearshirt', price: 40000, selectedColor: 'Black', selectedColorCode: 'black', selectedColorValue: '#0a0a0a', selectedSize: 'M' },
+    { id: 'hoodie', name: 'From Africa Hoodie', tag: 'Hoodie', price: 50000, selectedColor: 'Black', selectedColorCode: 'black', selectedColorValue: '#0a0a0a', selectedSize: 'M' }
+  ];
+
+  let selectedProducts = new Set();
+  let orderReference = null;
+  let swiperInstances = [];
+
+  function formatMoney(amount) { return '₦' + amount.toLocaleString('en-NG'); }
+  function calculateTotal() { let total = 0; selectedProducts.forEach(id => { const p = products.find(p => p.id === id); if(p) total += p.price; }); return total; }
+  function getImagePath(productId, side, colorCode) { const base = productImageBases[productId]; if (!base) return ''; return base[side]; }
+  function applyColorTint(productId, colorOption) { /* no tint, preserve original image */ }
+
+  function updateProductImages(productId, colorCode) { /* keep consistent, but no dynamic reload needed */ }
+  function updateProductColor(productId, colorName, colorValue, colorCode) {
+    const product = products.find(p => p.id === productId);
+    if(product) {
+      product.selectedColor = colorName; product.selectedColorValue = colorValue; product.selectedColorCode = colorCode;
+      const card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+      if(card) {
+        card.querySelectorAll('.product-swatch').forEach(swatch => swatch.dataset.colorName === colorName ? swatch.classList.add('active') : swatch.classList.remove('active'));
+        const colorTextSpan = card.querySelector('.selected-color-text'); if(colorTextSpan) colorTextSpan.textContent = colorName;
+      }
+      updateUI();
+    }
+  }
+  function updateProductSize(productId, size) { const product = products.find(p => p.id === productId); if(product) { product.selectedSize = size; const card = document.querySelector(`.product-card[data-product-id="${productId}"]`); if(card) { card.querySelectorAll('.size-chip').forEach(chip => chip.dataset.size === size ? chip.classList.add('active') : chip.classList.remove('active')); } updateUI(); } }
+  function updateUI() {
+    const selectedProductDetails = Array.from(selectedProducts).map(id => { const p = products.find(p => p.id === id); return p ? `${p.name} (${p.selectedColor}, Size: ${p.selectedSize})` : ''; }).filter(Boolean);
+    document.getElementById('selectedProductsList').innerHTML = selectedProductDetails.length ? selectedProductDetails.join(', ') : '—';
+    document.getElementById('orderItemsList').innerHTML = selectedProductDetails.length ? selectedProductDetails.join(', ') : '—';
+    const total = calculateTotal();
+    document.getElementById('totalAmount').innerHTML = formatMoney(total);
+    document.getElementById('orderAmount').innerHTML = formatMoney(total);
+    document.querySelectorAll('.product-card').forEach(card => { const pid = card.dataset.productId; if(selectedProducts.has(pid)) { card.classList.add('selected'); const chip = card.querySelector('.select-chip'); if(chip) { chip.classList.add('active'); chip.textContent = '✓ Selected'; } } else { card.classList.remove('selected'); const chip = card.querySelector('.select-chip'); if(chip) { chip.classList.remove('active'); chip.textContent = 'Select'; } } });
+  }
+  function toggleProduct(productId) { if(selectedProducts.has(productId)) selectedProducts.delete(productId); else selectedProducts.add(productId); updateUI(); }
+  function generateReference() { const date = new Date(); const timestamp = date.getTime().toString(36).toUpperCase(); const random = Math.random().toString(36).substring(2,8).toUpperCase(); return `CC-${timestamp}-${random}`; }
+  function generateReceipt() {
+    const selectedItems = Array.from(selectedProducts).map(id => { const p = products.find(p => p.id === id); return p ? `  - ${p.name} (${p.selectedColor}): ${formatMoney(p.price)}` : ''; }).filter(Boolean).join('\n');
+    const total = calculateTotal(); const date = new Date().toLocaleString('en-NG');
+    const deliveryName = document.getElementById('deliveryName')?.value || ''; const deliveryPhone = document.getElementById('deliveryPhone')?.value || '';
+    const deliveryAddress = document.getElementById('deliveryAddress')?.value || ''; const deliveryNotes = document.getElementById('deliveryNotes')?.value || '';
+    return `CROSSED CLASSIC — RECEIPT\nFirst Edition • From Africa\n\nReference: ${orderReference || '—'}\nDate: ${date}\n\nDelivery:\n  Name: ${deliveryName || '—'}\n  Phone: ${deliveryPhone || '—'}\n  Address: ${deliveryAddress || '—'}\n  Notes: ${deliveryNotes || '—'}\n\nOrder Items:\n${selectedItems || '  —'}\n\nTotal Paid: ${formatMoney(total)}\n\nPayment To:\nAccount: 9126273467\nBank: Palmpay Ltd\nName: Oluwafemi\n\nTrack your order using the reference above.\n\nThank you for shopping with Crossed Classic!\nFrom Africa, with love.`;
+  }
+  function showReceipt() { if(!orderReference) { alert('Please click "I have sent the money" first to generate your reference.'); return; } if(selectedProducts.size===0) { alert('Please select at least one product first.'); return; } document.getElementById('receiptText').innerHTML = generateReceipt(); document.getElementById('receiptModal').classList.add('active'); }
+  function closeModal() { document.getElementById('receiptModal').classList.remove('active'); }
+  const API_BASE = (() => {
+    const localFrontend = ['localhost', '127.0.0.1'].includes(location.hostname) && location.port !== '8000';
+    return window.CROSSED_CLASSIC_API_BASE || (location.protocol === 'file:' || localFrontend ? 'http://localhost:8000' : '');
+  })();
+  let currentUser = null;
+
+  async function updateAuthUI() {
+    const authBtn = document.getElementById('authBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/me`, { credentials: 'include' });
+      const me = await res.json().catch(() => ({}));
+
+      if (res.ok && me && me.user) {
+        currentUser = me.user;
+        if (authBtn) {
+          authBtn.href = './settings.html';
+          authBtn.textContent = 'Settings';
+          authBtn.title = me.user.name || me.user.email || 'Account';
+        }
+        if (logoutBtn) logoutBtn.style.display = '';
+        return true;
+      }
+    } catch {}
+
+    currentUser = null;
+    if (authBtn) {
+      authBtn.href = './login.html';
+      authBtn.textContent = 'Login';
+      authBtn.title = '';
+    }
+    if (logoutBtn) logoutBtn.style.display = 'none';
+    return false;
+  }
+
+  async function requireUser() {
+    if (currentUser) return true;
+    const isLoggedIn = await updateAuthUI();
+    if (isLoggedIn) return true;
+    location.href = './login.html';
+    return false;
+  }
+
+  function processPayment() {
+    if(!currentUser) { requireUser(); return; }
+    if(selectedProducts.size===0) { alert('Please select at least one product first.'); return; }
+    const deliveryName = document.getElementById('deliveryName')?.value.trim(); const deliveryAddress = document.getElementById('deliveryAddress')?.value.trim();
+    if(!deliveryName || !deliveryAddress) { alert('Please provide recipient name and address for delivery.'); document.getElementById('deliveryName')?.focus(); return; }
+    if(!orderReference) orderReference = generateReference();
+    document.getElementById('referenceNumber').innerHTML = orderReference;
+    document.getElementById('orderReveal').classList.add('show');
+    document.getElementById('safeNote').classList.add('show');
+    document.getElementById('orderReveal').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const items = Array.from(selectedProducts).map(id => { const p = products.find(p => p.id === id); return p ? { id: p.id, name: p.name, color: p.selectedColor, size: p.selectedSize, price: p.price } : null; }).filter(Boolean);
+    fetch(`${API_BASE}/api/orders`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reference: orderReference, items, total: calculateTotal(), delivery: { name: deliveryName, phone: document.getElementById('deliveryPhone')?.value || '', address: deliveryAddress, notes: document.getElementById('deliveryNotes')?.value || '' } }) }).catch(()=>{});
+  }
+
+  function loadImageWithLoader(imgElement, src, loaderElement) { imgElement.src = src; const onLoad = () => { imgElement.classList.add('loaded'); if(loaderElement) loaderElement.style.display = 'none'; }; imgElement.onload = onLoad; imgElement.onerror = () => { imgElement.classList.add('loaded'); }; if(imgElement.complete) onLoad(); }
+
+  function renderProductCardsWithCarousel() {
+    const grid = document.getElementById('productGrid'); grid.innerHTML = '';
+    products.forEach((product, idx) => {
+      const card = document.createElement('div'); card.className = 'product-card'; card.dataset.productId = product.id;
+      const initialFrontSrc = getImagePath(product.id, 'front', product.selectedColorCode); const initialBackSrc = getImagePath(product.id, 'back', product.selectedColorCode);
+      const colorSwatchesHtml = colorOptions.map(color => `<div class="product-swatch" style="background: ${color.value};" data-color-name="${color.name}" data-color-value="${color.value}" data-color-code="${color.code}" title="${color.name}"></div>`).join('');
+      const sizeChipsHtml = sizeOptions.map(size => `<div class="size-chip" data-size="${size}" ${size === product.selectedSize ? 'class="size-chip active"' : ''}>${size}</div>`).join('');
+      card.innerHTML = `<div class="swiper product-swiper-${idx}" style="aspect-ratio:1/1; width:100%;"><div class="swiper-wrapper"><div class="swiper-slide"><div class="slide-loader loader-front" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:#111; z-index:2;"><div class="loader-spinner"></div><div class="loader-text">Loading front...</div></div><img class="carousel-img" data-src="${initialFrontSrc}" alt="${product.name} front"><div class="color-overlay"></div></div><div class="swiper-slide"><div class="slide-loader loader-back" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:#111; z-index:2;"><div class="loader-spinner"></div><div class="loader-text">Loading back...</div></div><img class="carousel-img" data-src="${initialBackSrc}" alt="${product.name} back"><div class="color-overlay"></div></div></div><div class="swiper-pagination"></div></div><div class="product-info"><div class="product-tag">${product.tag}</div><div class="product-name">${product.name}</div><div class="product-price">${formatMoney(product.price)}</div><div class="product-colors"><div class="product-color-label">COLOR</div><div class="product-swatches">${colorSwatchesHtml}</div><div class="selected-color-text">${product.selectedColor}</div></div><div class="product-sizes"><div class="product-size-label">SIZE</div><div class="product-size-chips">${sizeChipsHtml}</div></div><div class="select-chip" data-product="${product.id}">Select</div></div>`;
+      grid.appendChild(card);
+      const swiperEl = card.querySelector(`.swiper`);
+      const swiperInstance = new Swiper(swiperEl, { loop: false, simulateTouch: true, grabCursor: true, slidesPerView: 1, pagination: { el: card.querySelector('.swiper-pagination'), clickable: true }, on: { init: function() { const slides = swiperEl.querySelectorAll('.swiper-slide'); slides.forEach((slide) => { const img = slide.querySelector('.carousel-img'); const loader = slide.querySelector('.slide-loader'); if(img && img.dataset.src) loadImageWithLoader(img, img.dataset.src, loader); }); } } });
+      swiperInstances.push(swiperInstance);
+      card.querySelectorAll('.product-swatch').forEach(swatch => swatch.addEventListener('click', (e) => { e.stopPropagation(); updateProductColor(product.id, swatch.dataset.colorName, swatch.dataset.colorValue, swatch.dataset.colorCode); }));
+      card.querySelectorAll('.size-chip').forEach(chip => chip.addEventListener('click', (e) => { e.stopPropagation(); updateProductSize(product.id, chip.dataset.size); }));
+      card.querySelector('.select-chip').addEventListener('click', (e) => { e.stopPropagation(); toggleProduct(product.id); });
+    });
+  }
+
+  function init() { renderProductCardsWithCarousel(); updateUI(); document.getElementById('sentMoneyBtn').addEventListener('click', processPayment); document.getElementById('receiptBtn').addEventListener('click', showReceipt); document.getElementById('closeModalBtn').addEventListener('click', closeModal); document.getElementById('receiptModal').addEventListener('click', (e) => { if(e.target === document.getElementById('receiptModal')) closeModal(); }); document.getElementById('screenshotHint').addEventListener('click', () => alert('Take a screenshot of the receipt above to save it!')); const themeBtn = document.getElementById('themeToggle'); function applyTheme(theme) { const html = document.documentElement; if(theme === 'light') { html.setAttribute('data-theme', 'light'); if(themeBtn) themeBtn.textContent = '🌙'; } else { html.removeAttribute('data-theme'); if(themeBtn) themeBtn.textContent = '☀️'; } } const storedTheme = localStorage.getItem('crossedClassicTheme'); applyTheme(storedTheme === 'light' ? 'light' : 'dark'); if(themeBtn) { themeBtn.addEventListener('click', () => { const currentTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; const nextTheme = currentTheme === 'light' ? 'dark' : 'light'; applyTheme(nextTheme); localStorage.setItem('crossedClassicTheme', nextTheme); }); } }
+  function initAuthNav() {
+    updateAuthUI();
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async () => {
+        try {
+          await fetch(`${API_BASE}/api/auth/logout`, {
+            method: 'POST',
+            credentials: 'include',
+          }).catch(() => {});
+        } finally {
+          currentUser = null;
+          location.href = './login.html';
+        }
+      });
+    }
+  }
+
+  if(document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      init();
+      initAuthNav();
+    });
+  } else {
+    init();
+    initAuthNav();
+  }
+
+</script>
+</body>
+</html>

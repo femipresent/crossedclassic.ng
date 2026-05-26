@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crossed Classic — Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="./api-config.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black:#0a0a0a; --off-white:#f0ede6; --gold:#b8952a; --accent:#c8a951; }
+    :root { --on-gold:#0a0a0a; }
+    html[data-theme="light"] { --black:#fbfaf7; --off-white:#1a1a1a; --gold:#b8952a; --accent:#7a5b12; --on-gold:#0a0a0a; }
+    body{ background:var(--black); color:var(--off-white); font-family:'Cormorant Garamond',serif; min-height:100vh; overflow-x:hidden; }
+    nav{ display:flex; justify-content:space-between; align-items:center; padding:1.2rem 2rem; border-bottom:1px solid rgba(180,149,42,0.2); position:sticky; top:0; background:rgba(10,10,10,0.95); z-index:10; }
+    .nav-brand{ display:flex; gap:0.9rem; align-items:center; }
+    .nav-brand img{ width:38px; height:38px; border-radius:50%; object-fit:cover; }
+    .nav-brand span{ font-family:'Bebas Neue',sans-serif; letter-spacing:0.06em; color:var(--accent); font-size:1.3rem; }
+    .nav-actions{ display:flex; gap:0.75rem; align-items:center; }
+    .btn{ min-height:44px; border:1px solid var(--gold); font-family:'Space Mono',monospace; font-size:0.62rem; letter-spacing:0.26em; text-transform:uppercase; cursor:pointer; background:transparent; color:var(--accent); padding:0 1rem; border-radius:12px; text-decoration:none; }
+    .emoji-btn{ border:none; padding:0.3rem; font-size:0.8rem; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; cursor:pointer; }
+    .btn.primary{ background:var(--gold); color:var(--on-gold); }
+
+    .page{ max-width:980px; margin:0 auto; padding:3rem 1.5rem 5rem; }
+    h1{ font-family:'Bebas Neue',sans-serif; font-size:3.3rem; letter-spacing:0.04em; margin-bottom:0.5rem; }
+    .sub{ color:rgba(240,237,230,0.6); font-style:italic; line-height:1.8; margin-bottom:1.7rem; }
+
+    .card{ background:rgba(17,17,17,0.7); border:1px solid rgba(180,149,42,0.2); border-radius:18px; padding:1.2rem; margin-bottom:1rem; }
+    html[data-theme="light"] .card{ background:rgba(240,240,240,0.7); border:1px solid rgba(180,149,42,0.3); }
+    html[data-theme="light"] .sub{ color:rgba(26,26,26,0.64); }
+    .card h2{ font-family:'Bebas Neue',sans-serif; font-size:1.9rem; letter-spacing:0.04em; margin-bottom:0.8rem; }
+    .field{ margin-bottom:1rem; }
+    .field label{ display:block; font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:rgba(240,237,230,0.45); margin-bottom:0.55rem; }
+    .field input{ width:100%; min-height:48px; border:1px solid rgba(180,149,42,0.25); background:rgba(10,10,10,0.75); color:var(--off-white); padding:0.8rem 0.95rem; font-family:'Space Mono',monospace; font-size:0.75rem; outline:none; }
+    html[data-theme="light"] .field input{ background:rgba(255,255,255,0.75); color:var(--off-white); }
+    html[data-theme="light"] .field label{ color:rgba(26,26,26,0.52); }
+    .field input:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(200,169,81,0.15); }
+    .actions{ display:flex; gap:0.75rem; margin-top:1.4rem; flex-wrap:wrap; }
+    .hidden{ display:none !important; }
+
+    .page-loader { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; justify-content: center; align-items: center; padding: 1rem; z-index: 9999; opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s ease; }
+    .page-loader.active { opacity: 1; visibility: visible; }
+    .page-loader .loader-box { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 1.4rem 1.6rem; border-radius: 18px; background: rgba(17, 17, 17, 0.96); border: 1px solid rgba(200,169,81,0.2); }
+    .page-loader .loader-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--gold); animation: loaderPulse 0.8s ease-in-out infinite alternate; }
+    @keyframes loaderPulse { to { transform: scale(1.4); opacity: 0.6; } }
+
+    .profile-row{ display:flex; gap:1.2rem; align-items:flex-start; flex-wrap:wrap; }
+    .profile-avatar{ width:72px; height:72px; border-radius:50%; object-fit:cover; border:1px solid rgba(180,149,42,0.25); background:rgba(255,255,255,0.04); }
+
+    .file-input{ width:100%; }
+
+    button{ min-height:52px; border:1px solid var(--gold); font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.26em; text-transform:uppercase; cursor:pointer; background:transparent; color:var(--accent); border-radius:12px; }
+    .btn.primary, button.primary{ background:var(--gold); color:var(--on-gold); }
+
+    .contact{ font-family:'Space Mono',monospace; font-size:0.7rem; letter-spacing:0.08em; color:rgba(240,237,230,0.8); }
+    html[data-theme="light"] .contact{ color:rgba(26,26,26,0.72); }
+    .contact a{ color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(200,169,81,0.35); }
+
+    @media (max-width:720px){
+
+      nav{ padding:0.2rem 0.6rem; }
+      .nav-brand span{ font-size:1.05rem; }
+      .nav-brand img{ width:28px; height:28px; }
+      .nav-actions{ gap:0.45rem; flex-wrap:wrap; justify-content:flex-end; }
+      .emoji-btn{ width:30px; min-width:30px; min-height:30px; padding:0; font-size:0.8rem; }
+      .btn{ min-height:26px; padding:0 0.6rem; font-size:0.56rem; }
+      .page{ padding:2.2rem 1rem 4rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">
+      <img alt="Crossed Classic" src="./logo.png" />
+      <span>Crossed Classic</span>
+    </div>
+    <div class="nav-actions">
+      <a class="emoji-btn" href="./index.html" title="Home">🏠</a>
+      <a class="emoji-btn" href="./my-orders.html" title="My Orders">📦</a>
+      <a class="emoji-btn" href="./tracking.html" title="Track Order">📍</a>
+      <button class="btn" id="logoutBtn" type="button">Logout</button>
+    </div>
+  </nav>
+
+  <section class="page">
+    <h1>Settings</h1>
+    <div class="sub">Manage your account and preferences.</div>
+
+    <div class="card">
+      <h2>Account</h2>
+
+      <div class="profile-row">
+        <img id="avatarPreview" class="profile-avatar" alt="Profile picture" src="./logo.png" />
+        <div class="profile-info">
+          <div class="field">
+            <label for="avatarUpload">Profile picture</label>
+            <input id="avatarUpload" class="file-input" type="file" accept="image/*" disabled />
+          </div>
+          <div class="contact profile-help">
+            Upload a new profile picture and hit Save.
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="name">Name</label>
+        <input id="name" readonly />
+      </div>
+      <div class="field">
+        <label for="address">Address</label>
+        <input id="address" readonly />
+      </div>
+      <div class="field">
+        <label for="phone">Phone number</label>
+        <input id="phone" readonly />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" readonly />
+      </div>
+
+      <div class="actions">
+        <button id="editBtn" class="btn" type="button">Edit</button>
+        <button id="saveBtn" class="btn primary hidden" type="button">Save</button>
+        <button id="cancelBtn" class="btn hidden" type="button">Cancel</button>
+      </div>
+    </div>
+
+
+    <div class="card">
+  
+
+    <div class="card">
+      <h2>Contact Us</h2>
+      <p class="contact">
+        Questions and order help: <a href="mailto:contactcrossedclassic@gmail.com">contactcrossedclassic@gmail.com</a><br>
+        Rock CC & Be Lit — From Africa, Est. 2023
+      </p>
+    </div>
+  </section>
+
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-box">
+      <div class="loader-dot" aria-hidden="true"></div>
+      <div id="loaderMessage">Loading…</div>
+    </div>
+  </div>
+
+  <script>
+    // Theme auto-apply 
+    (function () {
+      const STORAGE_KEY = 'theme';
+      const root = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+
+      function getPreferredTheme() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved === 'light' || saved === 'dark') return saved;
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+
+      function applyTheme(theme) {
+        root.setAttribute('data-theme', theme);
+        if (btn) btn.textContent = theme === 'light' ? '🌙' : '☀️';
+      }
+
+      const initialTheme = getPreferredTheme();
+      applyTheme(initialTheme);
+
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+          const next = current === 'light' ? 'dark' : 'light';
+          localStorage.setItem(STORAGE_KEY, next);
+          applyTheme(next);
+        });
+      }
+    })();
+
+    const nameEl = document.getElementById('name');
+    const addressEl = document.getElementById('address');
+    const phoneEl = document.getElementById('phone');
+    const emailEl = document.getElementById('email');
+
+    const avatarUploadEl = document.getElementById('avatarUpload');
+    const avatarPreviewEl = document.getElementById('avatarPreview');
+
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    const pageLoader = document.getElementById('pageLoader');
+
+    const API_BASE = (() => {
+      const localFrontend = ['localhost', '127.0.0.1'].includes(location.hostname) && location.port !== '8000';
+      return window.CROSSED_CLASSIC_API_BASE || (location.protocol === 'file:' || localFrontend ? 'http://localhost:8000' : '');
+    })();
+
+    function showLoader(msg = 'Loading…') {
+      if (!pageLoader) return;
+      pageLoader.querySelector('#loaderMessage').textContent = msg;
+      pageLoader.classList.add('active');
+    }
+    function hideLoader() {
+      if (!pageLoader) return;
+      pageLoader.classList.remove('active');
+    }
+
+    function setEditing(isEditing) {
+      // Text fields
+      for (const el of [nameEl, addressEl, phoneEl, emailEl]) {
+        if (!el) continue;
+        if (isEditing) el.removeAttribute('readonly');
+        else el.setAttribute('readonly', '');
+      }
+
+      // Profile picture upload
+      if (avatarUploadEl) {
+        avatarUploadEl.disabled = !isEditing;
+      }
+
+      // Buttons
+      if (editBtn) editBtn.classList.toggle('hidden', isEditing);
+      if (saveBtn) saveBtn.classList.toggle('hidden', !isEditing);
+      if (cancelBtn) cancelBtn.classList.toggle('hidden', !isEditing);
+    }
+
+    async function loadUser(){
+      try {
+        showLoader('Loading profile…');
+        const res = await fetch(`${API_BASE}/api/auth/me`, { credentials: 'include' });
+        const me = await res.json().catch(() => ({}));
+        if (!res.ok || !me.ok || !me.user) {
+          location.href = './login.html';
+          return;
+        }
+
+        nameEl.value = me.user.name || '';
+        addressEl.value = me.user.address || '';
+        phoneEl.value = me.user.phone || '';
+        emailEl.value = me.user.email || '';
+        if (avatarPreviewEl) {
+              if (me.user.profilePic) {
+                avatarPreviewEl.src = me.user.profilePic;
+              } else {
+                const initials = (me.user.name || me.user.email || '').split(' ').map(s=>s[0]).filter(Boolean).slice(0,2).join('').toUpperCase();
+                const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='100%' height='100%' fill='%23b8952a'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Space Mono, monospace' font-size='80' fill='%230a0a0a'>${initials || 'CC'}</text></svg>`;
+                avatarPreviewEl.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+              }
+        }
+      } catch {
+        location.href = './login.html';
+      } finally {
+        hideLoader();
+      }
+    }
+
+    function readFileAsDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function getEditingState() {
+      return !(nameEl && nameEl.hasAttribute('readonly'));
+    }
+
+    editBtn.addEventListener('click', () => {
+      setEditing(true);
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      setEditing(false);
+      loadUser();
+    });
+
+    saveBtn.addEventListener('click', async () => {
+      const payload = {
+        name: nameEl?.value ?? '',
+        phone: phoneEl?.value ?? '',
+        address: addressEl?.value ?? '',
+      };
+
+      const file = avatarUploadEl?.files?.[0];
+      if (file) {
+        payload.profilePic = await readFileAsDataURL(file);
+      }
+
+      try {
+        showLoader('Saving profile…');
+        const res = await fetch(`${API_BASE}/api/auth/profile`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data?.error || 'Could not save profile');
+
+        alert('Profile updated successfully.');
+        setEditing(false);
+        await loadUser();
+      } catch (err) {
+        alert(String(err.message || err));
+      }
+    });
+
+    if (avatarUploadEl) {
+      avatarUploadEl.addEventListener('change', () => {
+        const file = avatarUploadEl.files && avatarUploadEl.files[0];
+        if (!file || !avatarPreviewEl) return;
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          avatarPreviewEl.src = String(reader.result || '');
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await fetch(`${API_BASE}/api/auth/logout`, { method: 'POST', credentials: 'include' }).catch(() => {});
+      } finally {
+        location.href = './login.html';
+      }
+    });
+
+    // Initial state
+    setEditing(false);
+    loadUser();
+
+  </script>
+</body>
+</html>

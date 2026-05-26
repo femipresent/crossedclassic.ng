@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crossed Classic — Track Order</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="./api-config.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black:#0a0a0a; --off-white:#f0ede6; --gold:#b8952a; --accent:#c8a951; }
+    :root { --on-gold:#0a0a0a; }
+    html[data-theme="light"] { --black:#fbfaf7; --off-white:#1a1a1a; --gold:#b8952a; --accent:#7a5b12; --on-gold:#0a0a0a; }
+    body{ background:var(--black); color:var(--off-white); font-family:'Cormorant Garamond',serif; min-height:100vh; overflow-x:hidden; }
+    nav{ display:flex; justify-content:space-between; align-items:center; padding:2rem 2rem; border-bottom:1px solid rgba(180,149,42,0.2); position:sticky; top:0; background:rgba(10,10,10,0.95); z-index:10; }
+    .nav-brand{ display:flex; gap:0.9rem; align-items:center; }
+    .nav-brand img{ width:38px; height:38px; border-radius:50%; object-fit:cover; }
+    .nav-brand span{ font-family:'Bebas Neue',sans-serif; letter-spacing:0.06em; color:var(--accent); font-size:1.3rem; }
+    .nav-actions{ display:flex; gap:0.75rem; align-items:center; }
+    .btn{ min-height:44px; border:1px solid var(--gold); font-family:'Space Mono',monospace; font-size:0.62rem; letter-spacing:0.26em; text-transform:uppercase; cursor:pointer; background:transparent; color:var(--accent); padding:0 1rem; border-radius:12px; }
+    .btn.primary{ background:var(--gold); color:var(--on-gold); }
+
+    .page{ max-width:980px; margin:0 auto; padding:3rem 1.5rem 5rem; }
+    h1{ font-family:'Bebas Neue',sans-serif; font-size:3.3rem; letter-spacing:0.04em; margin-bottom:0.5rem; }
+    .sub{ color:rgba(240,237,230,0.6); font-style:italic; line-height:1.8; margin-bottom:1.7rem; }
+    html[data-theme="light"] .sub{ color:rgba(26,26,26,0.64); }
+
+    .track-form{ background:rgba(17,17,17,0.7); border:1px solid rgba(180,149,42,0.2); border-radius:18px; padding:1.2rem; margin-bottom:2rem; }
+    html[data-theme="light"] .track-form{ background:rgba(240,240,240,0.7); border:1px solid rgba(180,149,42,0.3); }
+    .field{ margin-bottom:1rem; }
+    .field label{ display:block; font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:rgba(240,237,230,0.45); margin-bottom:0.55rem; }
+    .field input{ width:100%; min-height:48px; border:1px solid rgba(180,149,42,0.25); background:rgba(10,10,10,0.75); color:var(--off-white); padding:0.8rem 0.95rem; font-family:'Space Mono',monospace; font-size:0.75rem; outline:none; }
+    html[data-theme="light"] .field input{ background:rgba(255,255,255,0.75); }
+    html[data-theme="light"] .field label{ color:rgba(26,26,26,0.52); }
+    .field input:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(200,169,81,0.15); }
+
+    .status{ background:rgba(17,17,17,0.7); border:1px solid rgba(180,149,42,0.2); border-radius:18px; padding:1.2rem; margin-bottom:2rem; }
+    html[data-theme="light"] .status{ background:rgba(240,240,240,0.7); border:1px solid rgba(180,149,42,0.3); }
+    .status h2{ font-family:'Bebas Neue',sans-serif; font-size:1.9rem; letter-spacing:0.04em; margin-bottom:0.8rem; }
+    .status p{ margin-bottom:0.5rem; color:rgba(240,237,230,0.8); }
+    html[data-theme="light"] .status p{ color:rgba(26,26,26,0.78); }
+    .status-pill{ display:inline-flex; align-items:center; min-height:36px; border:1px solid rgba(180,149,42,0.35); border-radius:999px; padding:0 0.9rem; color:var(--accent); font-family:'Space Mono',monospace; font-size:0.68rem; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:1rem; }
+    .steps{ display:grid; grid-template-columns:repeat(4,1fr); gap:0.7rem; margin:1rem 0; }
+    .step{ border:1px solid rgba(180,149,42,0.16); background:rgba(10,10,10,0.45); border-radius:14px; padding:0.85rem 0.7rem; min-height:82px; display:flex; flex-direction:column; justify-content:center; gap:0.35rem; opacity:0.5; }
+    html[data-theme="light"] .step{ background:rgba(255,255,255,0.55); }
+    .step.done{ opacity:1; border-color:rgba(184,149,42,0.75); }
+    .step.current{ opacity:1; border-color:var(--gold); box-shadow:0 0 0 3px rgba(184,149,42,0.14); }
+    .step .k{ font-family:'Space Mono',monospace; font-size:0.58rem; letter-spacing:0.18em; text-transform:uppercase; color:rgba(240,237,230,0.48); }
+    html[data-theme="light"] .step .k{ color:rgba(26,26,26,0.52); }
+    .step .v{ font-family:'Bebas Neue',sans-serif; font-size:1.35rem; letter-spacing:0.04em; color:var(--accent); }
+    .order-meta{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:0.8rem; margin-top:1rem; }
+    .meta-box{ border-top:1px solid rgba(180,149,42,0.18); padding-top:0.7rem; }
+    .meta-box .k{ font-family:'Space Mono',monospace; font-size:0.56rem; letter-spacing:0.18em; text-transform:uppercase; color:rgba(240,237,230,0.45); }
+    html[data-theme="light"] .meta-box .k{ color:rgba(26,26,26,0.5); }
+    .meta-box .v{ margin-top:0.3rem; color:var(--off-white); word-break:break-word; }
+
+    .error{ color:#ff6b6b; }
+
+    /* Order History Styles */
+    .order-history-section{ margin-top:3rem; }
+    .order-history-section h2{ font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:0.04em; margin-bottom:1.2rem; }
+    .order-history-empty{ background:rgba(17,17,17,0.7); border:1px solid rgba(180,149,42,0.2); border-radius:18px; padding:2rem; text-align:center; color:rgba(240,237,230,0.6); }
+    html[data-theme="light"] .order-history-empty{ background:rgba(240,240,240,0.7); border:1px solid rgba(180,149,42,0.3); color:rgba(26,26,26,0.64); }
+
+    .order-list{ display:flex; flex-direction:column; gap:1rem; }
+    .order-item{ background:rgba(17,17,17,0.7); border:1px solid rgba(180,149,42,0.2); border-radius:18px; padding:1.2rem; cursor:pointer; transition:all 0.25s ease; }
+    html[data-theme="light"] .order-item{ background:rgba(240,240,240,0.7); border:1px solid rgba(180,149,42,0.3); }
+    .order-item:hover{ border-color:var(--accent); box-shadow:0 4px 12px rgba(184,149,42,0.15); transform:translateY(-2px); }
+    .order-item-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem; }
+    .order-item-ref{ font-family:'Space Mono',monospace; font-size:0.75rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+    .order-item-date{ font-family:'Cormorant Garamond',serif; font-size:0.85rem; color:rgba(240,237,230,0.6); }
+    html[data-theme="light"] .order-item-date{ color:rgba(26,26,26,0.58); }
+    .order-item-summary{ display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; }
+    .order-item-products{ flex:1; }
+    .order-item-product-name{ color:var(--off-white); font-size:0.9rem; margin-bottom:0.3rem; }
+    .order-item-product-count{ font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(240,237,230,0.5); }
+    html[data-theme="light"] .order-item-product-count{ color:rgba(26,26,26,0.5); }
+    .order-item-price{ font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:0.04em; color:var(--gold); text-align:right; }
+    .order-item-status{ font-family:'Space Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; display:inline-flex; align-items:center; gap:0.4rem; padding:0.4rem 0.7rem; border-radius:8px; margin-top:0.8rem; }
+    .order-item-status.pending{ background:rgba(255,193,7,0.15); color:#ffc107; }
+    .order-item-status.processing{ background:rgba(33,150,243,0.15); color:#2196f3; }
+    .order-item-status.shipped{ background:rgba(76,175,80,0.15); color:#4caf50; }
+    .order-item-status.delivered{ background:rgba(76,175,80,0.25); color:#66bb6a; }
+
+    /* Modal Styles */
+    .modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; padding:1rem; z-index:9999; opacity:0; visibility:hidden; transition:opacity 0.3s ease, visibility 0.3s ease; }
+    .modal-overlay.active{ opacity:1; visibility:visible; }
+    .modal-content{ background:rgba(17,17,17,0.95); border:1px solid rgba(180,149,42,0.3); border-radius:18px; max-width:600px; width:100%; max-height:85vh; overflow-y:auto; padding:2rem; position:relative; }
+    html[data-theme="light"] .modal-content{ background:rgba(240,240,240,0.95); }
+    .modal-close{ position:absolute; top:1rem; right:1rem; border:none; background:transparent; font-size:1.5rem; cursor:pointer; color:var(--accent); }
+    .modal-close:hover{ opacity:0.7; }
+    .modal-header{ margin-bottom:1.5rem; border-bottom:1px solid rgba(180,149,42,0.2); padding-bottom:1rem; }
+    .modal-header h3{ font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:0.04em; margin-bottom:0.3rem; }
+    .modal-header .meta{ font-family:'Space Mono',monospace; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(240,237,230,0.5); }
+    html[data-theme="light"] .modal-header .meta{ color:rgba(26,26,26,0.5); }
+
+    .modal-section{ margin-bottom:1.5rem; }
+    .modal-section-title{ font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:rgba(240,237,230,0.45); margin-bottom:0.8rem; }
+    html[data-theme="light"] .modal-section-title{ color:rgba(26,26,26,0.5); }
+
+    .product-details{ background:rgba(10,10,10,0.5); border-radius:12px; padding:1rem; margin-bottom:0.8rem; }
+    html[data-theme="light"] .product-details{ background:rgba(0,0,0,0.08); }
+    .product-detail-row{ display:flex; justify-content:space-between; gap:0.5rem; margin-bottom:0.5rem; font-size:0.9rem; }
+    .product-detail-row:last-child{ margin-bottom:0; }
+    .product-detail-label{ color:rgba(240,237,230,0.6); }
+    html[data-theme="light"] .product-detail-label{ color:rgba(26,26,26,0.6); }
+    .product-detail-value{ color:var(--off-white); font-weight:500; }
+
+    .tracking-timeline{ margin-top:1rem; }
+    .timeline-item{ display:flex; gap:1rem; margin-bottom:1rem; }
+    .timeline-dot{ width:12px; height:12px; border-radius:50%; background:var(--gold); flex-shrink:0; margin-top:0.3rem; }
+    .timeline-content{ flex:1; }
+    .timeline-label{ font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); margin-bottom:0.2rem; }
+    .timeline-date{ font-size:0.8rem; color:rgba(240,237,230,0.5); }
+    html[data-theme="light"] .timeline-date{ color:rgba(26,26,26,0.5); }
+
+    @media (max-width:720px){
+      nav{ padding:0.2rem 0.6rem; }
+      .nav-brand img{ width:28px; height:28px; }
+      .nav-brand span{ font-size:1.05rem; }
+      .nav-actions{ gap:0.45rem; flex-wrap:wrap; justify-content:flex-end; }
+      .btn{ min-height:26px; padding:0 0.6rem; font-size:0.56rem; }
+      .page{ padding:2.2rem 1rem 4rem; }
+      .steps{ grid-template-columns:1fr 1fr; }
+      .order-item-summary{ flex-direction:column; }
+      .order-item-price{ text-align:left; }
+      .modal-content{ padding:1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">
+      <img alt="Crossed Classic" src="./logo.png" />
+      <span>Crossed Classic</span>
+    </div>
+    <div class="nav-actions">
+      <button class="btn" id="logoutBtn" type="button">Logout</button>
+    </div>
+  </nav>
+
+  <section class="page">
+    <h1>Track Order</h1>
+    <div class="sub">Enter your order reference to check the status.</div>
+
+    <form class="track-form" id="trackForm">
+      <div class="field">
+        <label for="reference">Order Reference</label>
+        <input id="reference" name="reference" required />
+      </div>
+      <button type="submit" class="btn primary">Track</button>
+    </form>
+
+    <div class="status" id="statusDiv" style="display:none;">
+      <h2>Order Status</h2>
+      <div class="status-pill" id="statusText"></div>
+      <div class="steps" id="statusSteps"></div>
+      <div class="order-meta" id="orderMeta"></div>
+    </div>
+
+    <!-- Order History Section -->
+    <div class="order-history-section">
+      <h2>Order History</h2>
+      <div id="orderHistoryContainer" class="order-history-empty">
+        Loading your orders...
+      </div>
+    </div>
+  </section>
+
+  <!-- Order Details Modal -->
+  <div class="modal-overlay" id="orderModal">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div class="modal-header">
+        <h3 id="modalOrderRef"></h3>
+        <div class="meta" id="modalOrderDate"></div>
+      </div>
+
+      <!-- Products Section -->
+      <div class="modal-section">
+        <div class="modal-section-title">Products Ordered</div>
+        <div id="modalProducts"></div>
+      </div>
+
+      <!-- Tracking Summary Section -->
+      <div class="modal-section">
+        <div class="modal-section-title">Tracking Summary</div>
+        <div id="modalTrackingSummary"></div>
+      </div>
+
+      <!-- Order Details Section -->
+      <div class="modal-section">
+        <div class="modal-section-title">Order Details</div>
+        <div class="product-details">
+          <div class="product-detail-row">
+            <span class="product-detail-label">Total Amount</span>
+            <span class="product-detail-value" id="modalTotal"></span>
+          </div>
+          <div class="product-detail-row">
+            <span class="product-detail-label">Delivery Address</span>
+            <span class="product-detail-value" id="modalDelivery"></span>
+          </div>
+          <div class="product-detail-row">
+            <span class="product-detail-label">Order Date</span>
+            <span class="product-detail-value" id="modalFullDate"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme auto-apply 
+    (function () {
+      const STORAGE_KEY = 'theme';
+      const root = document.documentElement;
+      const saved = localStorage.getItem(STORAGE_KEY);
+
+      let theme = 'dark';
+      if (saved === 'light' || saved === 'dark') theme = saved;
+      else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) theme = 'light';
+
+      root.setAttribute('data-theme', theme);
+    })();
+
+    const trackForm = document.getElementById('trackForm');
+    const statusDiv = document.getElementById('statusDiv');
+    const statusText = document.getElementById('statusText');
+    const statusSteps = document.getElementById('statusSteps');
+    const orderMeta = document.getElementById('orderMeta');
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    // Order History Elements
+    const orderHistoryContainer = document.getElementById('orderHistoryContainer');
+    const orderModal = document.getElementById('orderModal');
+    const modalClose = document.getElementById('modalClose');
+
+    const API_BASE = (() => {
+      const localFrontend = ['localhost', '127.0.0.1'].includes(location.hostname) && location.port !== '8000';
+      return window.CROSSED_CLASSIC_API_BASE || (location.protocol === 'file:' || localFrontend ? 'http://localhost:8000' : '');
+    })();
+
+    const statusFlow = [
+      { key: 'pending', label: 'Pending' },
+      { key: 'processing', label: 'Processing' },
+      { key: 'shipped', label: 'Shipped' },
+      { key: 'delivered', label: 'Delivered' },
+    ];
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      }[char]));
+    }
+
+    function normalizeStatus(status) {
+      const current = String(status || '').trim().toLowerCase();
+      if (!current || ['confirmed', 'review', 'unprocessed'].includes(current)) return 'pending';
+      if (['ship', 'in transit'].includes(current)) return 'shipped';
+      if (['complete', 'completed'].includes(current)) return 'delivered';
+      return current;
+    }
+
+    function statusLabel(status) {
+      const normalized = normalizeStatus(status);
+      return statusFlow.find(step => step.key === normalized)?.label || String(status || 'Pending');
+    }
+
+    function formatDate(date) {
+      if (!date) return '';
+      const d = new Date(date);
+      return d.toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+
+    function formatDateTime(date) {
+      if (!date) return '';
+      const d = new Date(date);
+      return d.toLocaleString('en-NG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function renderTracking(order, status) {
+      const normalized = normalizeStatus(status);
+      const currentIndex = Math.max(statusFlow.findIndex(step => step.key === normalized), 0);
+      const items = Array.isArray(order.items) ? order.items : [];
+      const itemNames = items.map(item => `${item.name || item.id || 'Item'}${item.size ? ` (${item.size})` : ''}`).join(', ');
+
+      statusText.textContent = statusLabel(status);
+      statusSteps.innerHTML = statusFlow.map((step, index) => {
+        const state = index < currentIndex ? 'done' : index === currentIndex ? 'current' : '';
+        return `<div class="step ${state}"><div class="k">${index < currentIndex ? 'Done' : index === currentIndex ? 'Current' : 'Next'}</div><div class="v">${step.label}</div></div>`;
+      }).join('');
+
+      orderMeta.innerHTML = `
+        <div class="meta-box"><div class="k">Reference</div><div class="v">${escapeHtml(order.reference || '')}</div></div>
+        <div class="meta-box"><div class="k">Items</div><div class="v">${escapeHtml(itemNames || 'Order items')}</div></div>
+        <div class="meta-box"><div class="k">Total</div><div class="v">₦${Number(order.total || 0).toLocaleString('en-NG')}</div></div>
+        <div class="meta-box"><div class="k">Delivery</div><div class="v">${escapeHtml(order.delivery?.address || 'Delivery address saved')}</div></div>
+      `;
+
+      statusDiv.style.display = '';
+      statusDiv.classList.remove('error');
+    }
+
+    function renderOrderHistory(orders) {
+      if (!Array.isArray(orders) || orders.length === 0) {
+        orderHistoryContainer.innerHTML = '<div class="order-history-empty">No orders yet. Start shopping today!</div>';
+        return;
+      }
+
+      const orderList = document.createElement('div');
+      orderList.className = 'order-list';
+
+      orders.forEach(order => {
+        const items = Array.isArray(order.items) ? order.items : [];
+        const firstProduct = items[0]?.name || 'Order';
+        const itemCount = items.length;
+        const status = normalizeStatus(order.status);
+        const orderDate = formatDate(order.createdAt || order.date);
+
+        const orderItem = document.createElement('div');
+        orderItem.className = 'order-item';
+        orderItem.innerHTML = `
+          <div class="order-item-header">
+            <span class="order-item-ref">${escapeHtml(order.reference || 'N/A')}</span>
+            <span class="order-item-date">${orderDate}</span>
+          </div>
+          <div class="order-item-summary">
+            <div class="order-item-products">
+              <div class="order-item-product-name">${escapeHtml(firstProduct)}</div>
+              <div class="order-item-product-count">${itemCount} ${itemCount === 1 ? 'item' : 'items'}</div>
+            </div>
+            <div class="order-item-price">₦${Number(order.total || 0).toLocaleString('en-NG')}</div>
+          </div>
+          <span class="order-item-status ${status}">${statusLabel(order.status)}</span>
+        `;
+
+        orderItem.addEventListener('click', () => showOrderDetails(order));
+        orderList.appendChild(orderItem);
+      });
+
+      orderHistoryContainer.innerHTML = '';
+      orderHistoryContainer.appendChild(orderList);
+    }
+
+    function showOrderDetails(order) {
+      const items = Array.isArray(order.items) ? order.items : [];
+      const status = normalizeStatus(order.status);
+      const currentIndex = Math.max(statusFlow.findIndex(step => step.key === status), 0);
+
+      // Header
+      document.getElementById('modalOrderRef').textContent = escapeHtml(order.reference || 'Order');
+      document.getElementById('modalOrderDate').textContent = formatDateTime(order.createdAt || order.date);
+
+      // Products
+      const productsHTML = items.map(item => `
+        <div class="product-details">
+          <div class="product-detail-row">
+            <span class="product-detail-label">Product</span>
+            <span class="product-detail-value">${escapeHtml(item.name || 'Item')}</span>
+          </div>
+          ${item.size ? `<div class="product-detail-row"><span class="product-detail-label">Size</span><span class="product-detail-value">${escapeHtml(item.size)}</span></div>` : ''}
+          ${item.color ? `<div class="product-detail-row"><span class="product-detail-label">Color</span><span class="product-detail-value">${escapeHtml(item.color)}</span></div>` : ''}
+          ${item.quantity ? `<div class="product-detail-row"><span class="product-detail-label">Quantity</span><span class="product-detail-value">${item.quantity}</span></div>` : ''}
+          ${item.price ? `<div class="product-detail-row"><span class="product-detail-label">Price</span><span class="product-detail-value">₦${Number(item.price).toLocaleString('en-NG')}</span></div>` : ''}
+        </div>
+      `).join('');
+      document.getElementById('modalProducts').innerHTML = productsHTML;
+
+      // Tracking Summary
+      const trackingHTML = statusFlow.map((step, index) => {
+        const isDone = index < currentIndex;
+        const isCurrent = index === currentIndex;
+        return `
+          <div class="timeline-item">
+            <div class="timeline-dot" style="opacity: ${isDone || isCurrent ? 1 : 0.3};"></div>
+            <div class="timeline-content">
+              <div class="timeline-label">${step.label} ${isDone ? '✓' : isCurrent ? '→' : ''}</div>
+              <div class="timeline-date">${isDone || isCurrent ? 'Completed' : 'Pending'}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('modalTrackingSummary').innerHTML = trackingHTML;
+
+      // Order Details
+      document.getElementById('modalTotal').textContent = `₦${Number(order.total || 0).toLocaleString('en-NG')}`;
+      document.getElementById('modalDelivery').textContent = escapeHtml(order.delivery?.address || 'Delivery address on file');
+      document.getElementById('modalFullDate').textContent = formatDateTime(order.createdAt || order.date);
+
+      orderModal.classList.add('active');
+    }
+
+    function closeOrderModal() {
+      orderModal.classList.remove('active');
+    }
+
+    async function loadOrderHistory() {
+      try {
+        const res = await fetch(`${API_BASE}/api/orders`, { credentials: 'include' });
+        const data = await res.json().catch(() => ({}));
+        
+        if (res.ok && data.ok && Array.isArray(data.orders)) {
+          renderOrderHistory(data.orders);
+        } else {
+          renderOrderHistory([]);
+        }
+      } catch (err) {
+        renderOrderHistory([]);
+      }
+    }
+
+    trackForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const reference = document.getElementById('reference').value.trim();
+      if (!reference) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/orders/track/${encodeURIComponent(reference)}`);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) throw new Error(data.message || 'Order not found');
+
+        renderTracking(data.order || {}, data.order?.status || data.status || 'pending');
+      } catch (err) {
+        statusText.textContent = err.message;
+        statusSteps.innerHTML = '';
+        orderMeta.innerHTML = '';
+        statusDiv.style.display = '';
+        statusDiv.classList.add('error');
+      }
+    });
+
+    modalClose.addEventListener('click', closeOrderModal);
+    orderModal.addEventListener('click', (e) => {
+      if (e.target === orderModal) closeOrderModal();
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await fetch(`${API_BASE}/api/auth/logout`, { method: 'POST', credentials: 'include' }).catch(() => {});
+      } finally {
+        location.href = './login.html';
+      }
+    });
+
+    // Load order history on page load
+    loadOrderHistory();
+  </script>
+</body>
+</html>

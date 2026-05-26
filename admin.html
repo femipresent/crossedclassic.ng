@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crossed Classic — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="./api-config.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black:#0a0a0a; --off-white:#f0ede6; --gold:#b8952a; --accent:#c8a951; --forest:#1e2e1e; }
+    body{ background:var(--black); color:var(--off-white); font-family:'Cormorant Garamond',serif; min-height:100vh; overflow-x:hidden; }
+    nav{ display:flex; justify-content:space-between; align-items:center; padding:1.2rem 2rem; border-bottom:1px solid rgba(180,149,42,0.2); position:sticky; top:0; background:rgba(10,10,10,0.95); z-index:10; }
+    .nav-brand{ display:flex; gap:0.9rem; align-items:center; }
+    .nav-brand img{ width:38px; height:38px; border-radius:50%; object-fit:cover; }
+    .nav-brand span{ font-family:'Bebas Neue',sans-serif; letter-spacing:0.06em; color:var(--accent); font-size:1.3rem; }
+    .nav-actions{ display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+
+    .pill{ font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.22em; text-transform:uppercase; border:1px solid rgba(180,149,42,0.25); background:rgba(17,17,17,0.6); color:rgba(240,237,230,0.75); padding:0.75rem 1rem; border-radius:999px; }
+    .btn, .nav-actions a { text-decoration: none; }
+    .btn{ min-height:44px; border:1px solid var(--gold); font-family:'Space Mono',monospace; font-size:0.62rem; letter-spacing:0.26em; text-transform:uppercase; cursor:pointer; background:transparent; color:var(--accent); padding:0 1rem; border-radius:12px; display:inline-flex; align-items:center; justify-content:center; }
+    .btn:hover, .btn:focus{ opacity:0.92; }
+    .btn.primary{ background:var(--gold); color:#0a0a0a; }
+
+    .wrap{ max-width:1100px; margin:0 auto; padding:2.5rem 1.5rem 5rem; }
+    h1{ font-family:'Bebas Neue',sans-serif; font-size:3.2rem; letter-spacing:0.04em; margin-bottom:0.5rem; }
+    .sub{ color:rgba(240,237,230,0.6); font-style:italic; line-height:1.8; margin-bottom:1.7rem; }
+
+    .grid{ display:grid; grid-template-columns: 1fr; gap:1rem; }
+
+    .card{ background:rgba(17,17,17,0.7); border:1px solid rgba(180,149,42,0.2); border-radius:18px; padding:1.2rem; }
+    .card h2{ font-family:'Bebas Neue',sans-serif; font-size:1.9rem; letter-spacing:0.04em; margin-bottom:0.8rem; }
+
+    .summary{ display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:0.8rem; }
+    .metric{ background:rgba(10,10,10,0.55); border:1px solid rgba(180,149,42,0.16); border-radius:14px; padding:0.9rem; }
+    .metric .k{ font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.26em; text-transform:uppercase; color:rgba(240,237,230,0.45); }
+    .metric .val{ font-family:'Bebas Neue',sans-serif; font-size:1.8rem; color:var(--accent); margin-top:0.25rem; }
+
+    .toolbar{ display:flex; gap:0.8rem; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+    .filters{ display:flex; gap:0.8rem; flex-wrap:wrap; align-items:center; }
+    input, textarea, select{ width: 100%; background:rgba(10,10,10,0.6); border:1px solid rgba(180,149,42,0.25); color:var(--off-white); padding:0.85rem 0.95rem; font-family:'Space Mono',monospace; letter-spacing:0.05em; border-radius:12px; }
+    input{ width: 240px; }
+    .table{ width:100%; border-collapse: collapse; overflow:hidden; border-radius:16px; border:1px solid rgba(180,149,42,0.2); }
+    .table th, .table td{ padding:0.85rem 0.9rem; border-bottom:1px solid rgba(180,149,42,0.12); text-align:left; vertical-align:top; }
+    .table th{ font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.26em; text-transform:uppercase; color:rgba(240,237,230,0.45); background:rgba(0,0,0,0.25); }
+    .muted{ color:rgba(240,237,230,0.6); font-style:italic; }
+
+    .orderRef{ font-family:'Bebas Neue',sans-serif; color:var(--accent); font-size:1.25rem; letter-spacing:0.03em; }
+    .small{ font-family:'Space Mono',monospace; font-size:0.7rem; letter-spacing:0.06em; color:rgba(240,237,230,0.8); word-break:break-word; }
+
+    .orderEditor{ display:grid; grid-template-columns: 150px 1fr; gap:0.7rem; margin-top:0.85rem; }
+    .orderEditor textarea{ resize: vertical; min-height:78px; }
+    .row{ display:flex; align-items:center; gap:0.65rem; flex-wrap:wrap; }
+
+    .formActions{ display:flex; gap:0.8rem; justify-content:flex-end; margin-top:0.8rem; }
+
+    .loader-wrap{ display:flex; align-items:center; gap:0.9rem; justify-content:center; margin:1.4rem 0; color:rgba(240,237,230,0.6); font-style:italic; font-family:'Space Mono',monospace; letter-spacing:0.15em; text-transform:uppercase; font-size:0.58rem; }
+    .loader{ width:34px; height:34px; position:relative; filter: drop-shadow(0 0 8px rgba(200,169,81,0.08)); }
+    .loader::before{ content:''; position:absolute; inset:0; border-radius:50%; background: radial-gradient(closest-side, rgba(200,169,81,0.15), rgba(200,169,81,0) 70%), conic-gradient(from 0deg, rgba(200,169,81,0) 0deg, rgba(200,169,81,0.95) 55deg, rgba(0,0,0,0.95) 120deg, rgba(200,169,81,0) 360deg); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 7px)); mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 7px)); animation: loaderSpin 1s linear infinite; }
+    .loader::after{ content:''; position:absolute; inset:11px; border-radius:50%; border:1px solid rgba(0,0,0,0.4); background:rgba(10,10,10,0.35); }
+    @keyframes loaderSpin{ from{ transform:rotate(0deg);} to{ transform:rotate(360deg);} }
+
+    @media (max-width:980px){
+      .summary{ grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width:720px){
+      nav{ padding:0.2rem 0.6rem; }
+      .nav-brand img{ width:28px; height:28px; }
+      .wrap{ padding:2.2rem 1rem 4rem; }
+      input{ width:100%; }
+      .btn{ min-height:26px; padding:0 0.6rem; }
+      .table th, .table td{ padding:0.75rem 0.7rem; }
+      .summary{ grid-template-columns: repeat(2,1fr); }
+      .orderEditor{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-brand">
+      <img alt="Crossed Classic" src="./logo.png" />
+      <span>Crossed Classic</span>
+    </div>
+    <div class="nav-actions">
+      <a class="btn" href="./index.html">Home</a>
+      <a class="btn" href="./settings.html">Settings</a>
+      <div class="pill" id="adminPill">Admin</div>
+      <button class="btn" id="logoutBtn" type="button">Logout</button>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <h1>Admin Dashboard</h1>
+    <div class="sub">Track orders, update status, and add reviews/notes.</div>
+
+    <div class="loader-wrap" id="loaderWrap">
+      <div class="loader" role="status" aria-label="Loading"></div>
+      <div>Loading</div>
+    </div>
+
+    <div id="content" style="display:none;">
+      <div class="grid">
+        <div class="card">
+          <h2>Summary</h2>
+          <div class="summary" id="summaryGrid">
+            <!-- metrics injected -->
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <div class="filters">
+              <input id="q" placeholder="Search reference / product / user" />
+              <select id="statusFilter">
+                <option value="">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+              </select>
+            </div>
+            <div class="muted small" id="resultsMeta"></div>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Order</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Review / Notes</th>
+                <th>Update</th>
+              </tr>
+            </thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+
+          <div class="muted small" id="emptyState" style="display:none; padding:1rem 0.3rem;">No orders match your filters.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loaderWrap = document.getElementById('loaderWrap');
+    const content = document.getElementById('content');
+    const ordersBody = document.getElementById('ordersBody');
+    const summaryGrid = document.getElementById('summaryGrid');
+    const emptyState = document.getElementById('emptyState');
+    const resultsMeta = document.getElementById('resultsMeta');
+
+    const qEl = document.getElementById('q');
+    const statusFilterEl = document.getElementById('statusFilter');
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    const API_BASE = (() => {
+      const localFrontend = ['localhost', '127.0.0.1'].includes(location.hostname) && location.port !== '8000';
+      return window.CROSSED_CLASSIC_API_BASE || (location.protocol === 'file:' || localFrontend ? 'http://localhost:8000' : '');
+    })();
+
+    function escapeHtml(s){
+      return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'<','>':'>','"':'"',"'":'&#39;'}[c]));
+    }
+
+    function normalizeStatus(st){
+      return String(st || '').toLowerCase();
+    }
+
+    let allOrders = [];
+
+    async function requireAdmin(){
+      const res = await fetch(`${API_BASE}/api/auth/me`, { credentials: 'include' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || 'Auth check failed');
+      if (!data.ok || !data.user) {
+        location.replace('./login.html?redirect=admin');
+        return false;
+      }
+      if (!data.isAdmin) {
+        throw new Error('Forbidden');
+      }
+      return true;
+    }
+
+    async function loadSummary(){
+      const res = await fetch(`${API_BASE}/api/orders/admin/summary`, { credentials: 'include' });
+      const data = await res.json().catch(()=>({}));
+      if(!res.ok || !data.ok) throw new Error(data?.error || 'summary load failed');
+
+      const s = data.summary || {};
+      const metrics = [
+        { k:'Total Orders', v:String(s.totalOrders ?? 0) },
+        { k:'Revenue', v:`₦${Number(s.totalRevenue ?? 0).toFixed(2)}` },
+        { k:'Pending', v:String(s.totalPending ?? 0) },
+        { k:'Processing', v:String(s.totalProcessing ?? 0) },
+        { k:'Shipped', v:String(s.totalShipped ?? 0) },
+        { k:'Delivered', v:String(s.totalDelivered ?? 0) },
+        { k:'Reviews', v:String(s.reviewsCount ?? 0) },
+        { k:'Avg order', v:`₦${Number(s.avgOrderValue ?? 0).toFixed(2)}` },
+      ];
+
+      summaryGrid.innerHTML = '';
+      metrics.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'metric';
+        div.innerHTML = `<div class="k">${escapeHtml(m.k)}</div><div class="val">${escapeHtml(m.v)}</div>`;
+        summaryGrid.appendChild(div);
+      });
+    }
+
+    function statusBadge(st){
+      const s = normalizeStatus(st);
+      if(['delivered','complete','completed'].includes(s)) return 'Delivered';
+      if(['shipped','ship','in transit'].includes(s)) return 'Shipped';
+      if(s === 'processing') return 'Processing';
+      if(!s || ['pending','review','unprocessed'].includes(s)) return 'Pending';
+      return st ? String(st) : '—';
+    }
+
+    function filterOrders(orders){
+      const q = String(qEl.value || '').trim().toLowerCase();
+      const status = statusFilterEl.value;
+
+      return orders.filter(o => {
+        const reference = String(o.reference || o.id || '').toLowerCase();
+        const product = String(o.product || '').toLowerCase();
+        const userId = String(o.userId || '').toLowerCase();
+        const adminReview = String(o.adminReview || '').toLowerCase();
+
+        const matchesQ = !q || [reference, product, userId, adminReview].some(x => x.includes(q));
+
+        if(!status) return matchesQ;
+        const st = normalizeStatus(o.status);
+
+        if(status === 'pending') return matchesQ && (!st || ['pending','review','unprocessed'].includes(st));
+        if(status === 'processing') return matchesQ && st === 'processing';
+        if(status === 'shipped') return matchesQ && ['shipped','ship','in transit'].includes(st);
+        if(status === 'delivered') return matchesQ && ['delivered','complete','completed'].includes(st);
+
+        return matchesQ;
+      });
+    }
+
+    function renderOrders(){
+      ordersBody.innerHTML = '';
+      const filtered = filterOrders(allOrders);
+
+      resultsMeta.textContent = `${filtered.length} order(s)`;
+
+      if(filtered.length === 0){
+        emptyState.style.display = 'block';
+        return;
+      }
+      emptyState.style.display = 'none';
+
+      filtered.forEach(o => {
+        const reference = String(o.reference || o.id || '');
+        const product = String(o.product || '');
+        const customerName = o.customerName || o.customer?.name || o.customer?.fullName || '';
+        const customerEmail = o.customerEmail || o.customer?.email || '';
+        const userId = o.userId ? String(o.userId) : '';
+        const customerLabel = customerName || customerEmail || userId || '—';
+
+        const statusText = statusBadge(o.status);
+        const adminReview = String(o.adminReview || '');
+        const adminNotes = String(o.adminNotes || '');
+
+        const row = document.createElement('tr');
+        const updateBtnId = `upd_${reference.replace(/[^a-zA-Z0-9]/g,'_')}`;
+
+        row.innerHTML = `
+          <td>
+            <div class="orderRef">${escapeHtml(reference || '—')}</div>
+            <div class="small">${escapeHtml(product)}</div>
+          </td>
+          <td>
+            <div class="small">${escapeHtml(customerLabel)}</div>
+          </td>
+          <td>
+            <div class="small">${escapeHtml(statusText)}</div>
+            <select
+              class="statusSel"
+              data-ref="${escapeHtml(reference)}"
+              aria-label="Update status for ${escapeHtml(reference)}"
+              style="margin-top:0.45rem;">
+              <option value="pending" ${normalizeStatus(o.status)==='pending' ? 'selected' : ''}>Pending</option>
+              <option value="processing" ${normalizeStatus(o.status)==='processing' ? 'selected' : ''}>Processing</option>
+              <option value="shipped" ${['shipped','ship','in transit'].includes(normalizeStatus(o.status)) ? 'selected' : ''}>Shipped</option>
+              <option value="delivered" ${['delivered','complete','completed'].includes(normalizeStatus(o.status)) ? 'selected' : ''}>Delivered</option>
+            </select>
+          </td>
+          <td>
+            <textarea class="reviewTa" data-ref="${escapeHtml(reference)}" placeholder="Admin review/notes" style="width:100%;">${escapeHtml(adminReview || adminNotes)}</textarea>
+          </td>
+          <td>
+            <div class="row">
+              <button class="btn primary" type="button" id="${updateBtnId}" data-ref="${escapeHtml(reference)}">Update</button>
+            </div>
+            <div class="small" id="msg_${updateBtnId}" style="margin-top:0.35rem;"></div>
+          </td>
+        `;
+
+        ordersBody.appendChild(row);
+
+        // wire per-button events
+        const btn = row.querySelector('button');
+        btn.addEventListener('click', async () => {
+          const ref = btn.getAttribute('data-ref') || reference;
+          const sel = row.querySelector('.statusSel');
+          const ta = row.querySelector('.reviewTa');
+          const nextStatus = sel.value;
+          const nextReview = String(ta.value || '').trim();
+
+          const msgEl = document.getElementById(`msg_${updateBtnId}`);
+          if (msgEl) msgEl.textContent = 'Saving...';
+
+          try {
+        const res = await fetch(`${API_BASE}/api/orders/${encodeURIComponent(ref)}/admin/status`, {
+              method: 'POST',
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ status: nextStatus, adminReview: nextReview, adminNotes: nextReview }),
+            });
+
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok || !data.ok) throw new Error(data?.error || 'Update failed');
+
+            // update local copy
+            const idx = allOrders.findIndex(x => String(x.id) === String(ref) || String(x.reference) === String(ref));
+            if (idx >= 0) {
+              allOrders[idx].status = data.order?.status ?? nextStatus;
+              allOrders[idx].adminReview = nextReview;
+              allOrders[idx].adminNotes = nextReview;
+              allOrders[idx].updatedAt = data.order?.updatedAt;
+            }
+
+            renderOrders();
+            if (msgEl) msgEl.textContent = 'Saved.';
+          } catch (e) {
+            if (msgEl) msgEl.textContent = String(e?.message || e || 'Could not update');
+          }
+        });
+      });
+    }
+
+    async function loadOrders(){
+      loaderWrap.style.display = 'flex';
+      content.style.display = 'none';
+      try {
+        const res = await fetch(`${API_BASE}/api/orders/admin`, { credentials: 'include' });
+        const data = await res.json().catch(()=>({}));
+        if (!res.ok || !data.ok) throw new Error('orders load failed');
+        allOrders = data.orders || [];
+        await loadSummary();
+        renderOrders();
+        loaderWrap.style.display = 'none';
+        content.style.display = 'block';
+      } catch (e) {
+        const message = String(e?.message || 'Failed to load');
+        loaderWrap.innerHTML = `<div class="loader" role="status" aria-label="Loading"></div><div>${escapeHtml(message)}</div>`;
+        content.style.display = 'none';
+        console.error(e);
+      }
+    }
+
+    qEl.addEventListener('input', () => renderOrders());
+    statusFilterEl.addEventListener('change', () => renderOrders());
+
+    logoutBtn.addEventListener('click', async () => {
+      try { await fetch(`${API_BASE}/api/auth/logout`, { method: 'POST', credentials: 'include' }).catch(()=>{}); } finally { location.href = './login.html'; }
+    });
+
+    // boot
+    (async () => {
+      try {
+        const allowed = await requireAdmin();
+        if (!allowed) return;
+        await loadOrders();
+        // loaderWrap handled in loadOrders
+      } catch (e) {
+        const message = String(e?.message || 'Forbidden');
+        loaderWrap.style.display = 'flex';
+        loaderWrap.innerHTML = `<div>${escapeHtml(message)}</div>`;
+        content.style.display = 'none';
+      }
+    })();
+  </script>
+</body>
+</html>
+
