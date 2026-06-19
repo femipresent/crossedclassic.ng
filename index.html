@@ -44,6 +44,7 @@
     border-bottom: 1px solid rgba(180,149,42,0.2);
     position: sticky; top: 0; z-index: 100;
     background: rgba(10,10,10,0.95);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
   }
   .nav-brand { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.3em; color: var(--accent); }
@@ -506,21 +507,23 @@
         const res=await fetch(`${API_BASE}/api/auth/me`, { credentials: 'include' });
         const me=await res.json().catch(()=> ({}));
         if(res.ok && me && me.user){
-          const name=me.user.name || me.user.email || 'Account';
           authBtn.href='./settings.html';
           authBtn.textContent='Settings';
-          authBtn.title=name;
+          authBtn.title=me.user.name || me.user.email || 'Account';
+          authBtn.style.display='';
           logoutBtn.style.display='';
         } else {
           authBtn.href='./login.html';
           authBtn.textContent='Login';
           authBtn.title='';
+          authBtn.style.display='';
           logoutBtn.style.display='none';
         }
       }catch{
         authBtn.href='./login.html';
         authBtn.textContent='Login';
         authBtn.title='';
+        authBtn.style.display='';
         logoutBtn.style.display='none';
       }
     }
@@ -531,6 +534,11 @@
     });
 
     updateAuthUI();
+
+    // Refresh auth on page visibility change (when returning from login)
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) updateAuthUI();
+    });
   </script>
 
   <footer style="padding:2rem;text-align:center;border-top:1px solid rgba(180,149,42,0.2);background:rgba(10,10,10,0.95);color:rgba(240,237,230,0.6);font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;">

@@ -25,6 +25,8 @@
     button.primary{ background:var(--gold); color:#0a0a0a; }
     .muted{ color:rgba(240,237,230,0.55); font-size:0.95rem; margin-top:1rem; }
     .muted a{ color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(200,169,81,0.35); }
+    /* make admin link unobtrusive */
+    .admin-link{ opacity:0.18; font-size:0.85rem; }
     .alert{ display:none; margin-top:1rem; padding:0.95rem 1rem; border-radius:12px; border:1px solid rgba(200,169,81,0.25); background:rgba(200,169,81,0.08); color:rgba(240,237,230,0.8); font-family:'Space Mono',monospace; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; }
 
     .page-loader { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; justify-content: center; align-items: center; padding: 1rem; z-index: 9999; opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s ease; }
@@ -60,7 +62,7 @@
 
     <div class="alert" id="alert" role="status" aria-live="polite"></div>
     <p class="muted"><a href="./index.html">← Back to Home</a></p>
-    <p class="muted"><a href="./login.html?redirect=admin">Admin login</a></p>
+    <p class="muted admin-link"><a href="./login.html?redirect=admin">Admin</a></p>
   </form>
 
   <div class="page-loader" id="pageLoader">

@@ -70,6 +70,7 @@
       top: 0;
       z-index: 100;
       background: rgba(10, 10, 10, 0.95);
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
     }
 
@@ -538,6 +539,7 @@
       z-index: 1000;
       align-items: center;
       justify-content: center;
+      -webkit-backdrop-filter: blur(8px);
       backdrop-filter: blur(8px);
     }
     .modal.active {
@@ -707,6 +709,7 @@
       gap: 0.75rem;
       font-size: 0.9rem;
       color: var(--text-muted);
+      -webkit-backdrop-filter: blur(2px);
       backdrop-filter: blur(2px);
       transition: background 0.2s;
     }
@@ -929,6 +932,7 @@
           authBtn.href = './settings.html';
           authBtn.textContent = 'Settings';
           authBtn.title = me.user.name || me.user.email || 'Account';
+          authBtn.style.display = '';
         }
         if (logoutBtn) logoutBtn.style.display = '';
         return true;
@@ -940,6 +944,7 @@
       authBtn.href = './login.html';
       authBtn.textContent = 'Login';
       authBtn.title = '';
+      authBtn.style.display = '';
     }
     if (logoutBtn) logoutBtn.style.display = 'none';
     return false;
@@ -987,7 +992,21 @@
     });
   }
 
-  function init() { renderProductCardsWithCarousel(); updateUI(); document.getElementById('sentMoneyBtn').addEventListener('click', processPayment); document.getElementById('receiptBtn').addEventListener('click', showReceipt); document.getElementById('closeModalBtn').addEventListener('click', closeModal); document.getElementById('receiptModal').addEventListener('click', (e) => { if(e.target === document.getElementById('receiptModal')) closeModal(); }); document.getElementById('screenshotHint').addEventListener('click', () => alert('Take a screenshot of the receipt above to save it!')); const themeBtn = document.getElementById('themeToggle'); function applyTheme(theme) { const html = document.documentElement; if(theme === 'light') { html.setAttribute('data-theme', 'light'); if(themeBtn) themeBtn.textContent = '🌙'; } else { html.removeAttribute('data-theme'); if(themeBtn) themeBtn.textContent = '☀️'; } } const storedTheme = localStorage.getItem('crossedClassicTheme'); applyTheme(storedTheme === 'light' ? 'light' : 'dark'); if(themeBtn) { themeBtn.addEventListener('click', () => { const currentTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; const nextTheme = currentTheme === 'light' ? 'dark' : 'light'; applyTheme(nextTheme); localStorage.setItem('crossedClassicTheme', nextTheme); }); } }
+  function init() { 
+    renderProductCardsWithCarousel(); 
+    updateUI(); 
+    document.getElementById('sentMoneyBtn').addEventListener('click', processPayment); 
+    document.getElementById('receiptBtn').addEventListener('click', showReceipt); 
+    document.getElementById('closeModalBtn').addEventListener('click', closeModal); 
+    document.getElementById('receiptModal').addEventListener('click', (e) => { if(e.target === document.getElementById('receiptModal')) closeModal(); }); 
+    document.getElementById('screenshotHint').addEventListener('click', () => alert('Take a screenshot of the receipt above to save it!')); 
+    
+    // Refresh auth on page visibility change (when returning from login)
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) updateAuthUI();
+    });
+    
+    const themeBtn = document.getElementById('themeToggle'); function applyTheme(theme) { const html = document.documentElement; if(theme === 'light') { html.setAttribute('data-theme', 'light'); if(themeBtn) themeBtn.textContent = '🌙'; } else { html.removeAttribute('data-theme'); if(themeBtn) themeBtn.textContent = '☀️'; } } const storedTheme = localStorage.getItem('crossedClassicTheme'); applyTheme(storedTheme === 'light' ? 'light' : 'dark'); if(themeBtn) { themeBtn.addEventListener('click', () => { const currentTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; const nextTheme = currentTheme === 'light' ? 'dark' : 'light'; applyTheme(nextTheme); localStorage.setItem('crossedClassicTheme', nextTheme); }); } }
   function initAuthNav() {
     updateAuthUI();
     const logoutBtn = document.getElementById('logoutBtn');
