@@ -62,7 +62,8 @@
 
     <div class="alert" id="alert" role="status" aria-live="polite"></div>
     <p class="muted"><a href="./index.html">← Back to Home</a></p>
-    <p class="muted admin-link"><a href="./login.html?redirect=admin">Admin</a></p>
+    <p class="muted admin-link"><a href="./admin.html">Admin</a></p>
+    <p class="muted" id="adminHint" style="display:none; font-size:0.82rem; opacity:0.7;">Use the admin email and password to sign in.</p>
   </form>
 
   <div class="page-loader" id="pageLoader">
@@ -83,6 +84,10 @@
     const redirectTarget = params.get('redirect');
 
     const pageLoader = document.getElementById('pageLoader');
+    const adminHint = document.getElementById('adminHint');
+    if (redirectTarget === 'admin' && adminHint) {
+      adminHint.style.display = 'block';
+    }
     function showAlert(msg){
       alertEl.textContent = msg;
       alertEl.style.display = 'block';
