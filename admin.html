@@ -168,16 +168,31 @@
 
     let allOrders = [];
 
+    async function showAccessMessage(message){
+      loaderWrap.style.display = 'flex';
+      loaderWrap.innerHTML = `
+        <div style="text-align:center; max-width:480px;">
+          <div style="margin-bottom:1rem; font-family:'Space Mono',monospace; letter-spacing:0.18em; color:rgba(240,237,230,0.8);">${escapeHtml(message)}</div>
+          <a class="btn primary" href="./login.html?redirect=admin">Go to admin login</a>
+        </div>
+      `;
+      content.style.display = 'none';
+    }
+
     async function requireAdmin(){
       const res = await fetch(`${API_BASE}/api/auth/me`, { credentials: 'include' });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || 'Auth check failed');
+      if (!res.ok) {
+        await showAccessMessage('Unable to verify your session. Please sign in to continue.');
+        return false;
+      }
       if (!data.ok || !data.user) {
-        location.replace('./login.html?redirect=admin');
+        await showAccessMessage('You must sign in as admin to access this page.');
         return false;
       }
       if (!data.isAdmin) {
-        throw new Error('Forbidden');
+        await showAccessMessage('This account is not authorized for admin. Sign in with the admin email.');
+        return false;
       }
       return true;
     }

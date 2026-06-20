@@ -62,8 +62,8 @@
 
     <div class="alert" id="alert" role="status" aria-live="polite"></div>
     <p class="muted"><a href="./index.html">← Back to Home</a></p>
-    <p class="muted admin-link"><a href="./admin.html">Admin</a></p>
-    <p class="muted" id="adminHint" style="display:none; font-size:0.82rem; opacity:0.7;">Use the admin email and password to sign in.</p>
+    <p class="muted admin-link"><a href="./login.html?redirect=admin">Admin login</a></p>
+    <p class="muted" id="adminHint" style="display:none; font-size:0.82rem; opacity:0.7;">Use the admin email and password to access the dashboard.</p>
   </form>
 
   <div class="page-loader" id="pageLoader">
@@ -85,9 +85,18 @@
 
     const pageLoader = document.getElementById('pageLoader');
     const adminHint = document.getElementById('adminHint');
-    if (redirectTarget === 'admin' && adminHint) {
-      adminHint.style.display = 'block';
+    const pageTitle = document.querySelector('h1');
+    const pageSub = document.querySelector('.sub');
+    const isAdminMode = redirectTarget === 'admin';
+
+    if (isAdminMode) {
+      pageTitle.textContent = 'Admin login';
+      pageSub.textContent = 'Sign in with the admin email to access the dashboard.';
+      if (adminHint) {
+        adminHint.style.display = 'block';
+      }
     }
+
     function showAlert(msg){
       alertEl.textContent = msg;
       alertEl.style.display = 'block';
