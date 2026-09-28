@@ -858,7 +858,15 @@
   const productImageBases = {
     tshirt:     { front: './assets/tshirt front.png',    back: './assets/tshirt back.png'    },
     swearshirt: { front: './assets/sweartshirt.png',     back: './assets/sweartshirt.png'   },
-    hoodie:     { front: './assets/hoodie front.png',    back: './assets/hoodie back.png'    }
+    hoodie:     { front: './assets/hoodie front.png',    back: './assets/hoodie back.png'    },
+    'top-members-black': {
+      black: { front: './assets/ccfrontblack.jpg', back: './assets/ccblackback.jpg' },
+      white: { front: './assets/Topfront.png', back: './assets/Topback.jpg' }
+    },
+    'top-members-white': {
+      black: { front: './assets/ccfrontblack.jpg', back: './assets/ccblackback.jpg' },
+      white: { front: './assets/Topfront.png', back: './assets/Topback.jpg' }
+    }
   };
 
   const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -866,19 +874,36 @@
   const products = [
     { id: 'tshirt', name: 'From Africa Tee', tag: 'T-Shirt', price: 30000, selectedColor: 'Black', selectedColorCode: 'black', selectedColorValue: '#0a0a0a', selectedSize: 'M' },
     { id: 'swearshirt', name: 'From Africa Sweatshirt', tag: 'Swearshirt', price: 40000, selectedColor: 'Black', selectedColorCode: 'black', selectedColorValue: '#0a0a0a', selectedSize: 'M' },
-    { id: 'hoodie', name: 'From Africa Hoodie', tag: 'Hoodie', price: 50000, selectedColor: 'Black', selectedColorCode: 'black', selectedColorValue: '#0a0a0a', selectedSize: 'M' }
+    { id: 'hoodie', name: 'From Africa Hoodie', tag: 'Hoodie', price: 50000, selectedColor: 'Black', selectedColorCode: 'black', selectedColorValue: '#0a0a0a', selectedSize: 'M' },
+    { id: 'top-members-black', name: 'Top Members Only — Black', tag: 'Limited Drop', price: 30000, selectedColor: 'Black', selectedColorCode: 'black', selectedColorValue: '#0a0a0a', selectedSize: 'M', colors: ['Black', 'White'] },
+    { id: 'top-members-white', name: 'Top Members Only — White', tag: 'Limited Drop', price: 30000, selectedColor: 'White', selectedColorCode: 'white', selectedColorValue: '#f7f7f7', selectedSize: 'M', colors: ['Black', 'White'] }
   ];
 
   let selectedProducts = new Set();
   let orderReference = null;
   let swiperInstances = [];
+  const productRequest = new URLSearchParams(window.location.search);
+  const requestedProductId = productRequest.get('item');
+  const requestedColorCode = productRequest.get('color');
+  const requestedSide = productRequest.get('side');
 
   function formatMoney(amount) { return '₦' + amount.toLocaleString('en-NG'); }
   function calculateTotal() { let total = 0; selectedProducts.forEach(id => { const p = products.find(p => p.id === id); if(p) total += p.price; }); return total; }
-  function getImagePath(productId, side, colorCode) { const base = productImageBases[productId]; if (!base) return ''; return base[side]; }
+  function getImagePath(productId, side, colorCode) {
+    const base = productImageBases[productId];
+    if (!base) return '';
+    return base[colorCode]?.[side] || base.black?.[side] || base[side];
+  }
   function applyColorTint(productId, colorOption) { /* no tint, preserve original image */ }
 
-  function updateProductImages(productId, colorCode) { /* keep consistent, but no dynamic reload needed */ }
+  function updateProductImages(productId, colorCode) {
+    const card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+    if (!card) return;
+    card.querySelectorAll('.carousel-img').forEach((img, index) => {
+      const src = getImagePath(productId, index === 0 ? 'front' : 'back', colorCode);
+      if (src) loadImageWithLoader(img, src, card.querySelectorAll('.slide-loader')[index]);
+    });
+  }
   function updateProductColor(productId, colorName, colorValue, colorCode) {
     const product = products.find(p => p.id === productId);
     if(product) {
@@ -888,6 +913,7 @@
         card.querySelectorAll('.product-swatch').forEach(swatch => swatch.dataset.colorName === colorName ? swatch.classList.add('active') : swatch.classList.remove('active'));
         const colorTextSpan = card.querySelector('.selected-color-text'); if(colorTextSpan) colorTextSpan.textContent = colorName;
       }
+      updateProductImages(productId, colorCode);
       updateUI();
     }
   }
@@ -979,7 +1005,7 @@
     products.forEach((product, idx) => {
       const card = document.createElement('div'); card.className = 'product-card'; card.dataset.productId = product.id;
       const initialFrontSrc = getImagePath(product.id, 'front', product.selectedColorCode); const initialBackSrc = getImagePath(product.id, 'back', product.selectedColorCode);
-      const colorSwatchesHtml = colorOptions.map(color => `<div class="product-swatch" style="background: ${color.value};" data-color-name="${color.name}" data-color-value="${color.value}" data-color-code="${color.code}" title="${color.name}"></div>`).join('');
+      const colorSwatchesHtml = colorOptions.filter(color => !product.colors || product.colors.includes(color.name)).map(color => `<div class="product-swatch" style="background: ${color.value};" data-color-name="${color.name}" data-color-value="${color.value}" data-color-code="${color.code}" title="${color.name}"></div>`).join('');
       const sizeChipsHtml = sizeOptions.map(size => `<div class="size-chip" data-size="${size}" ${size === product.selectedSize ? 'class="size-chip active"' : ''}>${size}</div>`).join('');
       card.innerHTML = `<div class="swiper product-swiper-${idx}" style="aspect-ratio:1/1; width:100%;"><div class="swiper-wrapper"><div class="swiper-slide"><div class="slide-loader loader-front" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:#111; z-index:2;"><div class="loader-spinner"></div><div class="loader-text">Loading front...</div></div><img class="carousel-img" data-src="${initialFrontSrc}" alt="${product.name} front"><div class="color-overlay"></div></div><div class="swiper-slide"><div class="slide-loader loader-back" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:#111; z-index:2;"><div class="loader-spinner"></div><div class="loader-text">Loading back...</div></div><img class="carousel-img" data-src="${initialBackSrc}" alt="${product.name} back"><div class="color-overlay"></div></div></div><div class="swiper-pagination"></div></div><div class="product-info"><div class="product-tag">${product.tag}</div><div class="product-name">${product.name}</div><div class="product-price">${formatMoney(product.price)}</div><div class="product-colors"><div class="product-color-label">COLOR</div><div class="product-swatches">${colorSwatchesHtml}</div><div class="selected-color-text">${product.selectedColor}</div></div><div class="product-sizes"><div class="product-size-label">SIZE</div><div class="product-size-chips">${sizeChipsHtml}</div></div><div class="select-chip" data-product="${product.id}">Select</div></div>`;
       grid.appendChild(card);
@@ -993,8 +1019,23 @@
   }
 
   function init() { 
+    const requestedProduct = products.find(product => product.id === requestedProductId);
+    if (requestedProduct) {
+      const requestedColor = colorOptions.find(color => color.code === requestedColorCode && (!requestedProduct.colors || requestedProduct.colors.includes(color.name)));
+      if (requestedColor) {
+        requestedProduct.selectedColor = requestedColor.name;
+        requestedProduct.selectedColorCode = requestedColor.code;
+        requestedProduct.selectedColorValue = requestedColor.value;
+      }
+      selectedProducts.add(requestedProduct.id);
+    }
     renderProductCardsWithCarousel(); 
     updateUI(); 
+    if (requestedProduct) {
+      const requestedCard = document.querySelector(`.product-card[data-product-id="${requestedProduct.id}"]`);
+      requestedCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (requestedSide === 'back') swiperInstances[products.indexOf(requestedProduct)]?.slideTo(1, 0);
+    }
     document.getElementById('sentMoneyBtn').addEventListener('click', processPayment); 
     document.getElementById('receiptBtn').addEventListener('click', showReceipt); 
     document.getElementById('closeModalBtn').addEventListener('click', closeModal); 

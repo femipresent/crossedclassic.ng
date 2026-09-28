@@ -51,7 +51,6 @@
   .nav-brand img { width: 34px; height: 34px; }
   .nav-tag { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.25em; color: rgba(240,237,230,0.35); text-transform: uppercase; }
   .nav-actions { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
-  .btn { display: inline-flex; align-items: center; justify-content: center; }
 
   /* HERO */
   .hero {
@@ -116,6 +115,14 @@
     filter: contrast(1.05);
   }
   .product-card.tall img { min-height: 760px; }
+
+  /* Top Members Only */
+  .top-members { margin: 0 0 5rem; }
+  .top-members-head { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.5rem; }
+  .top-members-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 4vw, 3.5rem); line-height: 0.95; letter-spacing: 0.05em; }
+  .top-members-title em { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.58em; color: var(--accent); display: block; letter-spacing: 0.08em; }
+  .top-members-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
+  .top-members .product-card img { min-height: 300px; object-fit: cover; }
 
   .product-card:hover img { transform: scale(1.05); filter: contrast(1.1) brightness(1.05); }
 
@@ -272,6 +279,7 @@
     .nav-actions { gap: 0.3rem; flex-wrap: wrap; justify-content: flex-end; }
     .btn { min-height: 26px; padding: 0 0.55rem; font-size: 0.52rem; }
     .products-grid { grid-template-columns: 1fr 1fr; }
+    .top-members-grid { grid-template-columns: 1fr 1fr; }
     .product-card.tall { grid-row: span 1; }
     .product-card.tall img { min-height: 380px; }
     .feature { grid-template-columns: 1fr; }
@@ -286,6 +294,8 @@
   }
   @media (max-width: 550px) {
     .products-grid { grid-template-columns: 1fr; }
+    .top-members-head { align-items: start; flex-direction: column; }
+    .top-members-grid { grid-template-columns: 1fr; }
     .shop-info-grid { grid-template-columns: 1fr; }
   }
 </style>
@@ -301,8 +311,8 @@
   
 
   <div class="nav-actions">
-    <a class="btn" id="authBtn" href="./login.html" style="height:44px;min-height:44px;border:1px solid var(--gold);font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.26em;text-transform:uppercase;cursor:pointer;background:var(--gold);color:var(--on-gold);padding:0 1.4rem;border-radius:12px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;">Login</a>
-    <button class="btn" id="logoutBtn" type="button" style="height:44px;min-height:44px;border:1px solid var(--gold);font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.26em;text-transform:uppercase;cursor:pointer;background:transparent;color:var(--accent);padding:0 1.4rem;border-radius:12px;display:none;white-space:nowrap;align-items:center;justify-content:center;">Logout</button>
+    <a class="btn" id="authBtn" href="./login.html" style="min-height:44px;border:1px solid var(--gold);font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.26em;text-transform:uppercase;cursor:pointer;background:var(--gold);color:var(--on-gold);padding:0 1.4rem;border-radius:12px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">Login</a>
+<button class="btn" id="logoutBtn" type="button" style="min-height:44px;border:1px solid var(--gold);font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.26em;text-transform:uppercase;cursor:pointer;background:transparent;color:var(--accent);padding:0 1.4rem;border-radius:12px;display:none;">Logout</button>
   </div>
 </nav>
 
@@ -330,6 +340,34 @@
 <section class="collection reveal" id="collection">
   <p class="section-label">The Drop</p>
   <h2 class="section-title">The <em>From Africa</em> Collection</h2>
+
+  <section class="top-members" aria-labelledby="top-members-title">
+    <div class="top-members-head">
+      <div>
+        <p class="section-label">Limited Drop</p>
+        <h3 class="top-members-title" id="top-members-title"><em>Top</em> Members Only</h3>
+      </div>
+      <p class="section-label">White &amp; Black</p>
+    </div>
+    <div class="top-members-grid">
+      <article class="product-card" onclick="location.href='./mockup.html?item=top-members-white&color=white&side=front'" role="link" tabindex="0">
+        <img src="./assets/Topfront.png" alt="Top Members Only white shirt, front">
+        <div class="card-overlay"><div class="card-tag">White / Front</div><div class="card-name">Top Members Only</div></div>
+      </article>
+      <article class="product-card" onclick="location.href='./mockup.html?item=top-members-white&color=white&side=back'" role="link" tabindex="0">
+        <img src="./assets/Topback.jpg" alt="Top Members Only white shirt, back">
+        <div class="card-overlay"><div class="card-tag">White / Back</div><div class="card-name">Top Members Only</div></div>
+      </article>
+      <article class="product-card" onclick="location.href='./mockup.html?item=top-members-black&color=black&side=front'" role="link" tabindex="0">
+        <img src="./assets/ccfrontblack.jpg" alt="Top Members Only black shirt, front">
+        <div class="card-overlay"><div class="card-tag">Black / Front</div><div class="card-name">Top Members Only</div></div>
+      </article>
+      <article class="product-card" onclick="location.href='./mockup.html?item=top-members-black&color=black&side=back'" role="link" tabindex="0">
+        <img src="./assets/ccblackback.jpg" alt="Top Members Only black shirt, back">
+        <div class="card-overlay"><div class="card-tag">Black / Back</div><div class="card-name">Top Members Only</div></div>
+      </article>
+    </div>
+  </section>
 
   <div class="products-grid">
     <!-- Tall card: From Africa Tee (back, map) -->
@@ -404,7 +442,7 @@
   <blockquote class="reveal">
     "We don't just wear clothes —<br>we wear <strong>where we come from.</strong><br>Every stitch, a story."
   </blockquote>
-  <cite>— Crossed Classic, Est. 2023</cite>
+  <cite>— Crossed Classic Est. 2023</cite>
 </section>
 
 <section class="shop-info reveal" id="shop-info">
